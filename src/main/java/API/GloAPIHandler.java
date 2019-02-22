@@ -1,24 +1,23 @@
 package API;
 
-import org.asynchttpclient.AsyncHandler;
-import org.asynchttpclient.AsyncHttpClient;
-import org.asynchttpclient.BoundRequestBuilder;
-import org.asynchttpclient.Response;
-import org.asynchttpclient.util.HttpConstants;
 
-import java.util.concurrent.Future;
+import com.mashape.unirest.http.HttpMethod;
+import com.mashape.unirest.http.Unirest;
+import com.mashape.unirest.http.async.Callback;
+import com.mashape.unirest.request.HttpRequest;
+import com.mashape.unirest.request.HttpRequestWithBody;
 
-import static org.asynchttpclient.Dsl.asyncHttpClient;
+import java.util.HashMap;
+import java.util.Map;
 
 // API Documentation
 // https://gloapi.gitkraken.com/v1/docs/
-
 public class GloAPIHandler {
     private static final String SERVER = "https://gloapi.gitkraken.com/v1/glo";
 
     // My personal token
     private String userToken = "pe7bf5f7c217d709a840c00da0ecb79ce5e9209f0";
-    private AsyncHttpClient asyncHttpClient = asyncHttpClient();
+    private HttpRequest pendingRequest;
 
     public GloAPIHandler() {}
 
@@ -28,46 +27,66 @@ public class GloAPIHandler {
 
     // Handler example
     // https://github.com/AsyncHttpClient/async-http-client
-    public void getBoards(AsyncHandler handler) {
+    public void getBoards(Callback callbackHandler) {
         String targetEndpoint = "/boards";
-        request(HttpConstants.Methods.GET, SERVER + targetEndpoint, handler);
+        request(HttpMethod.GET, SERVER + targetEndpoint, callbackHandler);
     }
 
-    private Future<Response> request(String method, String endpoint, AsyncHandler handler) {
-        return makeRequest(method, endpoint, handler, null).execute(handler);
+    private void request(HttpMethod method, String endpoint, Callback callbackHandler) {
+        HttpRequest request = buildRequest(method, endpoint, null);
+        request.asJsonAsync(callbackHandler);
     }
 
-    private Future<Response> request(String method, String endpoint, AsyncHandler handler, String body) {
-        return makeRequest(method, endpoint, handler, body).execute(handler);
+    private void request(HttpMethod method, String endpoint, Map<String,String> body, Callback callbackHandler) {
+        HttpRequest request = buildRequest(method, endpoint, body);
+        request.asJsonAsync(callbackHandler);
     }
 
-    private BoundRequestBuilder makeRequest(String method, String endpoint, AsyncHandler handler, String body) {
-        BoundRequestBuilder response;
+    // TODO: Handle get parameters
+    private HttpRequest buildRequest(HttpMethod method, String endpoint, Map<String, String> body) {
+        HttpRequest pendingRequest = null;
         switch (method) {
-            case "Get":
-                response = this.asyncHttpClient.prepareGet(endpoint);
+            case GET:
+                pendingRequest = Unirest.get(endpoint);
                 break;
-            case "Post":
-                response = this.asyncHttpClient.preparePost(endpoint);
+            case POST:
+                pendingRequest = Unirest.post(endpoint);
                 break;
             default:
-                response = null;
-        }
-        // TODO: Trow exception if userToken is not set
-        response.setHeader("Authorization", "Bearer " + this.userToken);
-
-        if (response != null  && body != null) {
-            response.setBody(body);
+                pendingRequest = null;
+                break;
         }
 
-        return response;
+        if (pendingRequest != null) {
+            pendingRequest.header("Authorization", "Bearer " + this.userToken);
+        }
+
+        if (body != null) {
+            for (String key : body.keySet()) {
+                ((HttpRequestWithBody) pendingRequest).field(key, body.get(key));
+            }
+        }
+        return pendingRequest;
     }
+
+    public static Map<String, String> queryToMap(String query) {
+        Map<String, String> result = new HashMap<>();
+        for (String param : query.split("&")) {
+            String[] entry = param.split("=");
+            if (entry.length > 1) {
+                result.put(entry[0], entry[1]);
+            }else{
+                result.put(entry[0], "");
+            }
+        }
+        return result;
+    }
+
+
 
     @Override
     protected void finalize() throws Throwable {
         super.finalize();
-        if (!this.asyncHttpClient.isClosed()) {
-            this.asyncHttpClient.close();
-        }
+
     }
 }
