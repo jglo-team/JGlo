@@ -19,6 +19,7 @@ public class Board {
     }
 
     public static Board parseFromMap(Map data) {
+
         return new Board("abc", "adua");
     }
 }
