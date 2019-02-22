@@ -26,7 +26,7 @@ public class GloAPIHandler {
     }
 
     // Handler example
-    // https://github.com/AsyncHttpClient/async-http-client
+    // http://unirest.io
     public void getBoards(Callback callbackHandler) {
         String targetEndpoint = "/boards";
         request(HttpMethod.GET, SERVER + targetEndpoint, callbackHandler);

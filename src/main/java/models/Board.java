@@ -5,6 +5,9 @@ import java.util.Map;
 public class Board {
     private String name, id;
 
+    public Board() {
+    }
+
     public Board(String name, String id) {
         this.name = name;
         this.id = id;

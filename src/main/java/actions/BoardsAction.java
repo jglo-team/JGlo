@@ -4,12 +4,16 @@ import API.GloAPIHandler;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 
+import com.intellij.openapi.application.ApplicationManager;
+import com.intellij.openapi.ui.Messages;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.JsonNode;
 import com.mashape.unirest.http.async.Callback;
 import com.mashape.unirest.http.exceptions.UnirestException;
+import models.Board;
 import models.JGloCallback;
 import models.JGloHelper;
+import org.eclipse.jdt.internal.compiler.ProcessTaskManager;
 
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -28,11 +32,19 @@ public class BoardsAction extends AnAction {
             @Override
             public void completed(HttpResponse response) {
                 JsonNode body =  (JsonNode) response.getBody();
-                LinkedList<String> keys = new LinkedList<>(Arrays.asList("name", "id"));
 
-                List<Map> result = JGloHelper.parseJson(body, keys);
+                try {
+                    List<Board> result = JGloHelper.parseJson(body, Board.class);
 
-                String name = (String) result.get(0).get("name");
+
+
+                    JGloHelper.showMessage("Ola mundo", "Funcionei", Messages.getInformationIcon());
+                } catch (Exception e) {
+                    JGloHelper.showMessage(e.getMessage(), "Error", Messages.getErrorIcon());
+                }
+
+
+                //String name = (String) result.get(0).get("name");
             }
         });
     }
