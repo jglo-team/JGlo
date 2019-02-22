@@ -1,22 +1,26 @@
 package API;
 
-import org.asynchttpclient.*;
+import org.asynchttpclient.AsyncHandler;
+import org.asynchttpclient.AsyncHttpClient;
+import org.asynchttpclient.BoundRequestBuilder;
+import org.asynchttpclient.Response;
 import org.asynchttpclient.util.HttpConstants;
-import org.jetbrains.annotations.NotNull;
 
-import java.util.concurrent.*;
+import java.util.concurrent.Future;
 
-import static org.asynchttpclient.Dsl.*;
+import static org.asynchttpclient.Dsl.asyncHttpClient;
+
+// API Documentation
+// https://gloapi.gitkraken.com/v1/docs/
 
 public class GloAPIHandler {
     private static final String SERVER = "https://gloapi.gitkraken.com/v1/glo";
 
-    private String userToken = null;
-    AsyncHttpClient asyncHttpClient = asyncHttpClient();
+    // My personal token
+    private String userToken = "pe7bf5f7c217d709a840c00da0ecb79ce5e9209f0";
+    private AsyncHttpClient asyncHttpClient = asyncHttpClient();
 
-    public GloAPIHandler() {
-
-    }
+    public GloAPIHandler() {}
 
     public boolean isAuthenticated() {
         return this.userToken != null;
@@ -49,6 +53,8 @@ public class GloAPIHandler {
             default:
                 response = null;
         }
+        // TODO: Trow exception if userToken is not set
+        response.setHeader("Authorization", "Bearer " + this.userToken);
 
         if (response != null  && body != null) {
             response.setBody(body);

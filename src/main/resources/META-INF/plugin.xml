@@ -19,5 +19,9 @@
 
     <actions>
         <!-- Add your actions here -->
+        <action id="JGlo.Boards" class="actions.BoardsAction" text="GetBoards" description="Gets all user boards">
+            <add-to-group group-id="MainMenu" anchor="last"/>
+        </action>
+
     </actions>
 </idea-plugin>
