@@ -1,5 +1,5 @@
 package models;
-import com.mashape.unirest.http.HttpResponse;
+
 import com.mashape.unirest.http.async.Callback;
 import com.mashape.unirest.http.exceptions.UnirestException;
 

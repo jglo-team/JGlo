@@ -28,7 +28,7 @@ public class GloAPIHandler {
     // Handler example
     // http://unirest.io
     public void getBoards(Callback callbackHandler) {
-        String targetEndpoint = "/boards";
+        String targetEndpoint = "/boards/5c705b64bf41e4000f413a2c";
         request(HttpMethod.GET, SERVER + targetEndpoint, callbackHandler);
     }
 
