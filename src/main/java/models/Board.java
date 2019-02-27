@@ -25,4 +25,9 @@ public class Board {
 
         return new Board("abc", "adua");
     }
+
+    @Override
+    public String toString() {
+        return this.name;
+    }
 }
