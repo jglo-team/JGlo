@@ -1,6 +1,4 @@
-package models;
-
-import java.util.Map;
+package models.Glo;
 
 public class Board {
     private String name, id;
@@ -21,8 +19,8 @@ public class Board {
         return id;
     }
 
-    public static Board parseFromMap(Map data) {
-
-        return new Board("abc", "adua");
+    @Override
+    public String toString() {
+        return this.name;
     }
 }
