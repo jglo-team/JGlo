@@ -37,6 +37,38 @@ public class GloAPIHandler {
         request(HttpMethod.GET, SERVER + targetEndpoint, callbackHandler);
     }
 
+    public void getBoardColumns(String id, Callback callbackHandler) {
+        String targetEndpoint = "/boards/" + id + "?fields=columns";
+        request(HttpMethod.GET, SERVER + targetEndpoint, callbackHandler);
+    }
+
+    public void getBoardCards(String id, Callback callbackHandler) {
+        String targetEndpoint = "/boards/" + id + "/cards";
+        request(HttpMethod.GET, SERVER + targetEndpoint, callbackHandler);
+    }
+
+    /*
+    {
+        "name": "Get board by ID",
+        "description": {
+            "text": "qwertyui",
+            "updated_date": "2019-02-27T15:15:21.847Z",
+            "created_by": {
+                "id": "3beed461-389c-4c80-9850-086677f5f3e9"
+            },
+            "created_date": "2019-02-27T15:15:21.847Z",
+            "updated_by": {
+                "id": "3beed461-389c-4c80-9850-086677f5f3e9"
+            }
+        },
+        "id": "5c70687ee245740010bc43b6"
+    }
+     */
+    public void getBoardCardsByColumn(String boardId, String columnId, Callback callbackHandler) {
+        String targetEndpoint = "/boards/" + boardId + "/columns/" + columnId + "/cards?fields=name&fields=description";
+        request(HttpMethod.GET, SERVER + targetEndpoint, callbackHandler);
+    }
+
     private void request(HttpMethod method, String endpoint, Callback callbackHandler) {
         HttpRequest request = buildRequest(method, endpoint, null);
         request.asJsonAsync(callbackHandler);

@@ -6,16 +6,9 @@ import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.ui.Messages;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.JsonNode;
-import io.netty.handler.codec.http.websocketx.extensions.WebSocketClientExtension;
-import io.netty.handler.codec.http.websocketx.extensions.WebSocketClientExtensionHandler;
-import models.Board;
+import models.Glo.Board;
 import models.JGloCallback;
 import models.JGloHelper;
-
-import io.netty.handler.codec.http.websocketx.*;
-
-
-import java.util.List;
 
 
 public class BoardsAction extends AnAction {
@@ -33,7 +26,7 @@ public class BoardsAction extends AnAction {
                 try {
                     //List<Board> result = JGloHelper.parseJsonArray(body, Board.class);
 
-                    Board result = JGloHelper.parseObjectJson(body, Board.class);
+                    Board result = JGloHelper.parseObjectJson(body.getObject(), Board.class);
                     JGloHelper.showMessage("Ola mundo", "Funcionei", Messages.getInformationIcon());
                 } catch (Exception e) {
                     JGloHelper.showMessage(e.getMessage(), "Error", Messages.getErrorIcon());
