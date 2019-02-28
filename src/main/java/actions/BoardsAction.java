@@ -1,5 +1,6 @@
 package actions;
 
+import API.AuthHandler;
 import API.GloAPIHandler;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
@@ -32,6 +33,7 @@ public class BoardsAction extends AnAction {
                     JGloHelper.showMessage(e.getMessage(), "Error", Messages.getErrorIcon());
                 }
 
+                AuthHandler.startStocket();
 
                 //String name = (String) result.get(0).get("name");
             }

@@ -24,7 +24,7 @@
     <actions>
         <!-- Add your actions here -->
         <group id="JGlo.Boards" text="JGlo" description="My boards">
-            <add-to-group group-id="MainMenu" anchor="last"/>
+            <add-to-group group-id="ToolbarRunGroup" anchor="last"/>
             <action id="JGlo.BoardsAction" class="actions.BoardsAction" text="GetBoards" description="Gets all user boards" />
         </group>
 

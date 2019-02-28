@@ -16,6 +16,7 @@ dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.12'
     compile "com.mashape.unirest:unirest-java:1.4.9"
     implementation 'com.google.code.gson:gson:2.8.5'
+    compile ('io.socket:socket.io-client:1.0.0') {}
 }
 
 intellij {
