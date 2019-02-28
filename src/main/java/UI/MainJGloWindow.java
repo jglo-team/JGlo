@@ -16,7 +16,9 @@ import org.json.JSONObject;
 import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
-import javax.swing.tree.TreePath;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -24,20 +26,30 @@ public class MainJGloWindow {
     private GloAPIHandler apiHandler;
     private JPanel panel1;
     private Tree boardTree;
-    private JButton button1;
+    private JButton createCard;
     private Tree columnCardTree;
+    private JPanel toolPanel;
+    private JScrollPane scroll;
 
     private List<Board> boards;
 
     public MainJGloWindow(ToolWindow toolWindow) {
         apiHandler = new GloAPIHandler();
+
+        this.boards = new LinkedList<>();
+        this.initializeComponents();
+    }
+
+    private void initializeComponents() {
         this.boardTree.setModel(null);
         this.columnCardTree.setModel(null);
 
-
-
-        this.boards = new LinkedList<>();
         getBoards();
+
+
+        JGloTreeCellRenderer customRenderer = new JGloTreeCellRenderer();
+        boardTree.setCellRenderer(customRenderer);
+        columnCardTree.setCellRenderer(customRenderer);
 
         boardTree.addTreeSelectionListener(treeSelectionEvent -> {
 
@@ -52,7 +64,14 @@ public class MainJGloWindow {
 
             populateColumnsTree(selectedBoard.getId());
         });
+
+        createCard.addActionListener(actionEvent -> {
+            AddCardDialog newDialog = new AddCardDialog(null);
+            newDialog.setVisible(true);
+        });
+
     }
+
 
     private void populateColumnsTree(String boardId) {
         apiHandler.getBoardColumns(boardId, new JGloCallback() {
@@ -64,8 +83,8 @@ public class MainJGloWindow {
                 // TODO: Continue here
                 try {
                     List<Column> columns = JGloHelper.parseJsonArray(responseJSON.getJSONArray("columns"), Column.class);
-                    initializeTree("Columns", columns, columnCardTree);
 
+                    initializeTree("Columns", columns, columnCardTree);
 
                     columnCardTree.addTreeSelectionListener(treeSelectionEvent -> {
                         DefaultMutableTreeNode node = (DefaultMutableTreeNode)
@@ -74,9 +93,10 @@ public class MainJGloWindow {
                         /* if nothing is selected */
                         if (node == null || node.getUserObject() == "Columns" || !(node.getUserObject() instanceof Column)) return;
 
-
                         Column selectedColumn = (Column) node.getUserObject();
                         appendCardsToTree(boardId, selectedColumn.getId(), node);
+
+
                     });
 
                 } catch (Exception e) {
@@ -99,9 +119,7 @@ public class MainJGloWindow {
                     for (Card card : cards) {
                         appendToNode(invokerNode, card);
                     }
-
                     columnCardTree.updateUI();
-                    columnCardTree.setSelectionPath(new TreePath(invokerNode.getPath()));
                 } catch (Exception e) {
                     System.out.println(e.getMessage());
                 }
@@ -133,11 +151,9 @@ public class MainJGloWindow {
         });
     }
 
-
-
     public <T> void initializeTree(String topName, List<T> items, Tree tree) {
         DefaultMutableTreeNode treeTop = new DefaultMutableTreeNode(topName);
-
+        //EditableTreeModel
         DefaultTreeModel treeModel = new DefaultTreeModel(treeTop);
         for (T b : items) {
             treeTop.add( new DefaultMutableTreeNode(b));

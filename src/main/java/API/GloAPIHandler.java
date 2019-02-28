@@ -6,6 +6,7 @@ import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.async.Callback;
 import com.mashape.unirest.request.HttpRequest;
 import com.mashape.unirest.request.HttpRequestWithBody;
+import models.Glo.Card;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -45,6 +46,11 @@ public class GloAPIHandler {
     public void getBoardCards(String id, Callback callbackHandler) {
         String targetEndpoint = "/boards/" + id + "/cards";
         request(HttpMethod.GET, SERVER + targetEndpoint, callbackHandler);
+    }
+
+    public void createCard(String boardId, Card newCard, Callback callbackHandler) {
+        String targetEndpoint = "/boards/" + boardId + "/cards";
+        request(HttpMethod.POST, SERVER + targetEndpoint, callbackHandler);
     }
 
     /*
