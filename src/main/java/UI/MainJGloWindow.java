@@ -17,8 +17,6 @@ import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -30,13 +28,14 @@ public class MainJGloWindow {
     private Tree columnCardTree;
     private JPanel toolPanel;
     private JScrollPane scroll;
+    private JButton button1;
 
     private List<Board> boards;
 
     public MainJGloWindow(ToolWindow toolWindow) {
         apiHandler = new GloAPIHandler();
-
         this.boards = new LinkedList<>();
+        toolPanel.setLayout((LayoutManager) new FlowLayout(FlowLayout.LEFT));
         this.initializeComponents();
     }
 
@@ -45,7 +44,6 @@ public class MainJGloWindow {
         this.columnCardTree.setModel(null);
 
         getBoards();
-
 
         JGloTreeCellRenderer customRenderer = new JGloTreeCellRenderer();
         boardTree.setCellRenderer(customRenderer);
@@ -66,12 +64,11 @@ public class MainJGloWindow {
         });
 
         createCard.addActionListener(actionEvent -> {
-            AddCardDialog newDialog = new AddCardDialog(null);
+            AddEditCardDialog newDialog = new AddEditCardDialog(null);
             newDialog.setVisible(true);
         });
 
     }
-
 
     private void populateColumnsTree(String boardId) {
         apiHandler.getBoardColumns(boardId, new JGloCallback() {

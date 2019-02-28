@@ -7,14 +7,14 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 
-public class AddCardDialog extends JDialog {
+public class AddEditCardDialog extends JDialog {
     private JPanel contentPane;
     private JButton buttonCreate;
     private JButton buttonCancel;
     private JTextField newCardNameTextField;
     private JTextArea cardDescriptionTextArea;
 
-    public AddCardDialog(Card card) {
+    public AddEditCardDialog(Card card) {
         setContentPane(contentPane);
         setModal(true);
         setPreferredSize(new Dimension(400,400));
