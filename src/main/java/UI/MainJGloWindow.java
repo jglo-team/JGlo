@@ -2,9 +2,12 @@ package UI;
 
 import API.GloAPIHandler;
 import com.intellij.openapi.wm.ToolWindow;
-import com.intellij.ui.treeStructure.Tree;
+import com.intellij.ui.ToolbarDecorator;
+import com.intellij.ui.components.JBList;
+import com.mashape.unirest.http.Headers;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.JsonNode;
+import com.mashape.unirest.http.Unirest;
 import models.Glo.Board;
 import models.Glo.Card;
 import models.Glo.Column;
@@ -14,94 +17,94 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import javax.swing.*;
-import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.DefaultTreeModel;
-import javax.swing.tree.TreePath;
+import java.awt.*;
 import java.util.LinkedList;
 import java.util.List;
 
 public class MainJGloWindow {
     private GloAPIHandler apiHandler;
-    private JPanel panel1;
-    private Tree boardTree;
-    private JButton button1;
-    private Tree columnCardTree;
+    private JPanel mainPanel;
+    private JBList boardList;
+    private JTabbedPane columnTabbedPane;
+    private JSplitPane splitPlane;
 
     private List<Board> boards;
+    private Board currentBoard;
 
+    // TODO: Split change - https://www.jetbrains.org/intellij/sdk/docs/user_interface_components/misc_swing_components.html
     public MainJGloWindow(ToolWindow toolWindow) {
         apiHandler = new GloAPIHandler();
-        this.boardTree.setModel(null);
-        this.columnCardTree.setModel(null);
-
-
-
         this.boards = new LinkedList<>();
+        this.initializeComponents();
+    }
+
+    @Override
+    protected void finalize() throws Throwable {
+        super.finalize();
+        Unirest.shutdown();
+    }
+
+    private void initializeComponents() {
         getBoards();
 
-        boardTree.addTreeSelectionListener(treeSelectionEvent -> {
+        boardList.addListSelectionListener(listSelectionEvent -> {
+            Board selectedBoard = boards.get(listSelectionEvent.getLastIndex());
 
-            DefaultMutableTreeNode node = (DefaultMutableTreeNode)
-                    boardTree.getLastSelectedPathComponent();
+            apiHandler.getBoardColumns(selectedBoard.getId(), new JGloCallback() {
+                @Override
+                public void completed(HttpResponse response) {
+                    JsonNode body = (JsonNode) response.getBody();
 
-            /* if nothing is selected */
-            if (node == null || node.getUserObject() == "Glo Boards") return;
+                    JSONObject responseJSON = body.getObject();
+                    // TODO: Continue here
+                    try {
+                        List<Column> columns = JGloHelper.parseJsonArray(responseJSON.getJSONArray("columns"), Column.class);
+                        selectedBoard.setColumns(columns);
+                        currentBoard = selectedBoard;
 
-            /* retrieve the node that was selected */
-            Board selectedBoard = (Board) node.getUserObject();
+                        populateTabs(selectedBoard.getId(), columns);
 
-            populateColumnsTree(selectedBoard.getId());
+                    } catch (Exception e) {
+                        System.out.println(e.getMessage());
+                    }
+                }
+            });
         });
     }
 
-    private void populateColumnsTree(String boardId) {
-        apiHandler.getBoardColumns(boardId, new JGloCallback() {
+    private void triggerDialog(Card card) {
+        AddEditCardDialog newDialog = new AddEditCardDialog(currentBoard, columnTabbedPane.getSelectedIndex(),card, new JGloCallback() {
             @Override
             public void completed(HttpResponse response) {
-                JsonNode body = (JsonNode) response.getBody();
-
-                JSONObject responseJSON = body.getObject();
-                // TODO: Continue here
-                try {
-                    List<Column> columns = JGloHelper.parseJsonArray(responseJSON.getJSONArray("columns"), Column.class);
-                    initializeTree("Columns", columns, columnCardTree);
-
-
-                    columnCardTree.addTreeSelectionListener(treeSelectionEvent -> {
-                        DefaultMutableTreeNode node = (DefaultMutableTreeNode)
-                                columnCardTree.getLastSelectedPathComponent();
-
-                        /* if nothing is selected */
-                        if (node == null || node.getUserObject() == "Columns" || !(node.getUserObject() instanceof Column)) return;
-
-
-                        Column selectedColumn = (Column) node.getUserObject();
-                        appendCardsToTree(boardId, selectedColumn.getId(), node);
-                    });
-
-                } catch (Exception e) {
-                    System.out.println(e.getMessage());
-                }
+                int h = response.getStatus();
+                Column column =  currentBoard.getColumns().get(columnTabbedPane.getSelectedIndex());
+                loadCards(currentBoard.getId(), column, columnTabbedPane.getSelectedIndex());
             }
+        });
+        newDialog.setVisible(true);
+    }
+
+    private void populateTabs(String boardId, List<Column> columns) {
+        columnTabbedPane.removeAll();
+        for (Column c: columns) {
+            columnTabbedPane.addTab(c.getName(), new JPanel(new FlowLayout(FlowLayout.LEFT)));
+        }
+        columnTabbedPane.addChangeListener(changeEvent -> {
+            Column selectedColumn = currentBoard.getColumns().get(columnTabbedPane.getSelectedIndex());
+            loadCards(boardId, selectedColumn, columnTabbedPane.getSelectedIndex());
         });
     }
 
-    private void appendCardsToTree(String boardId, String columnId, DefaultMutableTreeNode invokerNode) {
-        apiHandler.getBoardCardsByColumn(boardId, columnId, new JGloCallback() {
+    private void loadCards(String boardId, Column column, int index) {
+        apiHandler.getBoardCardsByColumn(boardId, column.getId(), new JGloCallback() {
             @Override
             public void completed(HttpResponse response) {
                 JsonNode body = (JsonNode) response.getBody();
                 try {
                     List<Card> cards = JGloHelper.parseJsonArray(body.getArray(), Card.class);
+                    column.setCards(cards);
 
-                    invokerNode.removeAllChildren();
-
-                    for (Card card : cards) {
-                        appendToNode(invokerNode, card);
-                    }
-
-                    columnCardTree.updateUI();
-                    columnCardTree.setSelectionPath(new TreePath(invokerNode.getPath()));
+                    populateTabContent(cards, index);
                 } catch (Exception e) {
                     System.out.println(e.getMessage());
                 }
@@ -109,12 +112,33 @@ public class MainJGloWindow {
         });
     }
 
-    public void appendToNode(DefaultMutableTreeNode parentNode, Object newNode) {
-        parentNode.add(new DefaultMutableTreeNode(newNode));
+    private void populateTabContent(List<Card> cards, int index) {
+        JPanel child = (JPanel) columnTabbedPane.getComponentAt(index);
+
+        JPanel newPanel = costumizeList(new JBList(), cards, new Dimension(child.getWidth(), child.getHeight()));
+
+        child.removeAll();
+        child.add(newPanel);
+    }
+
+    private <T> JPanel costumizeList(JBList list, List<T> items, Dimension size) {
+        JBList<T> cardJBList = new JBList<>();
+        JGloHelper.initializeList(items, cardJBList);
+        cardJBList.setBorder(null);
+        ToolbarDecorator decorator = ToolbarDecorator.createDecorator(cardJBList);
+
+        decorator.setAddAction(anActionButton -> triggerDialog(null));
+        decorator.setEditAction(anActionButton -> triggerDialog((Card) cardJBList.getSelectedValue()));
+
+        decorator.setAsUsualTopToolbar();
+        decorator.setMinimumSize(size);
+        decorator.setPreferredSize(size);
+
+        return decorator.createPanel();
     }
 
     public JPanel getContent() {
-        return panel1;
+        return mainPanel;
     }
 
     public void getBoards() {
@@ -126,23 +150,10 @@ public class MainJGloWindow {
 
                 try {
                     boards = JGloHelper.parseJsonArray(columnsArray, Board.class);
-                    initializeTree("JGlo Boards", boards, boardTree);
+                    JGloHelper.initializeList(boards, boardList);
                 } catch (Exception e) {
                 }
             }
         });
-    }
-
-
-
-    public <T> void initializeTree(String topName, List<T> items, Tree tree) {
-        DefaultMutableTreeNode treeTop = new DefaultMutableTreeNode(topName);
-
-        DefaultTreeModel treeModel = new DefaultTreeModel(treeTop);
-        for (T b : items) {
-            treeTop.add( new DefaultMutableTreeNode(b));
-        }
-
-        tree.setModel(treeModel);
     }
 }
