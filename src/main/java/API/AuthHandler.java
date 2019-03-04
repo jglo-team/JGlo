@@ -1,5 +1,6 @@
 package API;
 
+import com.intellij.ide.util.PropertiesComponent;
 import io.socket.client.IO;
 import io.socket.client.Socket;
 import io.socket.emitter.Emitter;
@@ -9,34 +10,27 @@ import java.net.URISyntaxException;
 public class AuthHandler {
 
 
-    public static void startStocket() {
+    public static void startSocket(String token) {
         Socket socket = null;
         try {
-            socket = IO.socket("http://localhost:8000");
+            socket = IO.socket("http://localhost:9090");
         } catch (URISyntaxException e) {
             e.printStackTrace();
         }
         Socket finalSocket = socket;
-        socket.on(Socket.EVENT_CONNECT, new Emitter.Listener() {
+        finalSocket
+                .on(Socket.EVENT_CONNECT, args -> {
+                    System.out.println(token);
+                    finalSocket.emit("token:set", token);
+                })
+                .on(Socket.EVENT_DISCONNECT, args -> System.out.println("Disconnected"))
+                .on("accessToken", args -> {
+                    String accessToken = args[0].toString();
+                    PropertiesComponent.getInstance().setValue("accessToken", accessToken);
+                    finalSocket.close();
+                });
 
-            @Override
-            public void call(Object... args) {
-                finalSocket.emit("foo", "hi");
-                finalSocket.disconnect();
-            }
-
-        }).on("event", new Emitter.Listener() {
-
-            @Override
-            public void call(Object... args) {}
-
-        }).on(Socket.EVENT_DISCONNECT, new Emitter.Listener() {
-
-            @Override
-            public void call(Object... args) {}
-
-        });
-        socket.connect();
+        finalSocket.connect();
 
     }
 

@@ -23,9 +23,9 @@
 
     <actions>
         <!-- Add your actions here -->
-        <group id="JGlo.Boards" text="JGlo" description="My boards">
-            <add-to-group group-id="ToolbarRunGroup" anchor="last"/>
-            <action id="JGlo.BoardsAction" class="actions.BoardsAction" text="GetBoards" description="Gets all user boards" />
+        <group id="JGlo.Boards" text="Glo" description="Glo" popup="true" icon="/gk-statusbar-icon.svg">
+            <add-to-group group-id="ToolsMenu" anchor="after" relative-to-action="JGlo.BoardsAction"/>
+            <action id="JGlo.BoardsAction" class="actions.LoginAction" text="Login" description="Opens the login page" />
         </group>
 
     </actions>

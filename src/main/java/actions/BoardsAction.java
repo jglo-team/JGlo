@@ -33,7 +33,9 @@ public class BoardsAction extends AnAction {
                     JGloHelper.showMessage(e.getMessage(), "Error", Messages.getErrorIcon());
                 }
 
-                AuthHandler.startStocket();
+//                AuthHandler.startSocket();
+
+
 
                 //String name = (String) result.get(0).get("name");
             }
