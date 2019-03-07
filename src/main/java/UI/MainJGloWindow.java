@@ -1,6 +1,7 @@
 package UI;
 
 import API.GloAPIHandler;
+import com.intellij.icons.AllIcons;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.ui.ToolbarDecorator;
 import com.intellij.ui.components.JBList;
@@ -86,13 +87,24 @@ public class MainJGloWindow {
 
     private void populateTabs(String boardId, List<Column> columns) {
         columnTabbedPane.removeAll();
+
+        columnTabbedPane.addTab("", AllIcons.ToolbarDecorator.AddIcon,new JPanel(new FlowLayout(FlowLayout.LEFT)));
+
         for (Column c: columns) {
             columnTabbedPane.addTab(c.getName(), new JPanel(new FlowLayout(FlowLayout.LEFT)));
         }
         columnTabbedPane.addChangeListener(changeEvent -> {
-            Column selectedColumn = currentBoard.getColumns().get(columnTabbedPane.getSelectedIndex());
-            loadCards(boardId, selectedColumn, columnTabbedPane.getSelectedIndex());
+            int selectedIndex = columnTabbedPane.getSelectedIndex();
+            if (selectedIndex == 0) {
+                triggerDialog(null);
+                return;
+            }
+            selectedIndex--;
+            Column selectedColumn = currentBoard.getColumns().get(selectedIndex);
+            loadCards(boardId, selectedColumn, selectedIndex);
         });
+
+        columnTabbedPane.setSelectedIndex(1);
     }
 
     private void loadCards(String boardId, Column column, int index) {
