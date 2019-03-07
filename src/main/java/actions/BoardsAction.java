@@ -1,6 +1,5 @@
 package actions;
 
-import API.AuthHandler;
 import API.GloAPIHandler;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;

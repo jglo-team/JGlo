@@ -15,7 +15,7 @@
 
     <extensions defaultExtensionNs="com.intellij">
         <!-- Add your extensions here -->
-        <toolWindow id="JGlo" anchor="right" secondary="false" factoryClass="UI.MainJGloWindowFactory" icon="/kraken.png" />
+        <toolWindow id="JGlo" anchor="right" secondary="false" factoryClass="UI.MainJGloWindowFactory" icon="/gk-statusbar-icon.svg" />
     </extensions>
 
 

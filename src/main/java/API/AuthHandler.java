@@ -4,9 +4,7 @@ import callbacks.AuthCallback;
 import com.intellij.ide.util.PropertiesComponent;
 import io.socket.client.IO;
 import io.socket.client.Socket;
-import io.socket.emitter.Emitter;
 import models.CustomError;
-import org.apache.log4j.spi.ErrorCode;
 
 import java.net.URISyntaxException;
 

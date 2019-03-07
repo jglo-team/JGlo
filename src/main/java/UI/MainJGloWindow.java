@@ -5,7 +5,6 @@ import com.intellij.icons.AllIcons;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.ui.ToolbarDecorator;
 import com.intellij.ui.components.JBList;
-import com.mashape.unirest.http.Headers;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.JsonNode;
 import com.mashape.unirest.http.Unirest;
@@ -78,8 +77,10 @@ public class MainJGloWindow {
             @Override
             public void completed(HttpResponse response) {
                 int h = response.getStatus();
-                Column column =  currentBoard.getColumns().get(columnTabbedPane.getSelectedIndex());
-                loadCards(currentBoard.getId(), column, columnTabbedPane.getSelectedIndex());
+                if (columnTabbedPane.getSelectedIndex() != 0) {
+                    Column column = currentBoard.getColumns().get(columnTabbedPane.getSelectedIndex());
+                    loadCards(currentBoard.getId(), column, columnTabbedPane.getSelectedIndex());
+                }
             }
         });
         newDialog.setVisible(true);
@@ -99,8 +100,7 @@ public class MainJGloWindow {
                 triggerDialog(null);
                 return;
             }
-            selectedIndex--;
-            Column selectedColumn = currentBoard.getColumns().get(selectedIndex);
+            Column selectedColumn = currentBoard.getColumns().get(selectedIndex - 1);
             loadCards(boardId, selectedColumn, selectedIndex);
         });
 
