@@ -6,6 +6,7 @@ import io.socket.client.IO;
 import io.socket.client.Socket;
 import io.socket.emitter.Emitter;
 import models.CustomError;
+import org.apache.log4j.spi.ErrorCode;
 
 import java.net.URISyntaxException;
 
@@ -17,8 +18,7 @@ public class AuthHandler {
 
         try {
             IO.Options opts = new IO.Options();
-            opts.timeout = 1000;
-            socket = IO.socket("http://localhost:9090", opts);
+            socket = IO.socket("https://jglo.ricardomaltez.com", opts);
         } catch (URISyntaxException e) {
             callback.error(CustomError.SOCKET_ERROR);
         }
@@ -35,11 +35,20 @@ public class AuthHandler {
                     PropertiesComponent.getInstance().setValue("accessToken", accessToken);
                     finalSocket.close();
                     callback.success();
-                });
+                })
+                .on(Socket.EVENT_CONNECT_TIMEOUT, args -> {
+                    finalSocket.close();
+                    callback.error(CustomError.SOCKET_ERROR);
+                })
+                .on(Socket.EVENT_CONNECT_ERROR, args -> {
+                    finalSocket.close();
+                    callback.error(CustomError.SOCKET_ERROR);
+                })
+        ;
 
         try {
             finalSocket.connect();
-        }catch (Exception e){
+        } catch (Exception e) {
             callback.error(CustomError.SOCKET_ERROR);
         }
 

@@ -21,7 +21,7 @@ public class LoginAction extends AnAction {
 
         String accessToken = PropertiesComponent.getInstance().getValue("accessToken");
 
-        String clientId = "509qtoevfhlzeinkmiom";
+        String clientId = "1qx3w9xgzcm3a4086cqy";
         String scope = "board:write";
 
         String token = SecureTokenGenerator.nextToken();
