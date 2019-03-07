@@ -1,11 +1,17 @@
 package API;
 
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mashape.unirest.http.HttpMethod;
+import com.mashape.unirest.http.HttpResponse;
+import com.mashape.unirest.http.JsonNode;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.async.Callback;
+import com.mashape.unirest.http.exceptions.UnirestException;
 import com.mashape.unirest.request.HttpRequest;
 import com.mashape.unirest.request.HttpRequestWithBody;
+import com.mashape.unirest.request.body.Body;
+import models.Glo.Card;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -47,23 +53,23 @@ public class GloAPIHandler {
         request(HttpMethod.GET, SERVER + targetEndpoint, callbackHandler);
     }
 
-    /*
-    {
-        "name": "Get board by ID",
-        "description": {
-            "text": "qwertyui",
-            "updated_date": "2019-02-27T15:15:21.847Z",
-            "created_by": {
-                "id": "3beed461-389c-4c80-9850-086677f5f3e9"
-            },
-            "created_date": "2019-02-27T15:15:21.847Z",
-            "updated_by": {
-                "id": "3beed461-389c-4c80-9850-086677f5f3e9"
-            }
-        },
-        "id": "5c70687ee245740010bc43b6"
+    public void createCard(String boardId, String columnId, Card newCard, Callback callbackHandler) {
+        String targetEndpoint = "/boards/" + boardId + "/cards";
+        ObjectMapper objectMapper = new ObjectMapper();
+        Map<String, Object> map = objectMapper.convertValue(newCard, Map.class);
+        map.put("column_id", columnId);
+
+        request(HttpMethod.POST, SERVER + targetEndpoint, map, callbackHandler);
     }
-     */
+
+    public void editCard(String boardId, Card card, Callback callbackHandler) {
+        String targetEndpoint = "/boards/" + boardId + "/cards/" + card.getId();
+        ObjectMapper objectMapper = new ObjectMapper();
+        Map<String, Object> map = objectMapper.convertValue(card, Map.class);
+
+        request(HttpMethod.POST, SERVER + targetEndpoint, map, callbackHandler);
+    }
+
     public void getBoardCardsByColumn(String boardId, String columnId, Callback callbackHandler) {
         String targetEndpoint = "/boards/" + boardId + "/columns/" + columnId + "/cards?fields=name&fields=description";
         request(HttpMethod.GET, SERVER + targetEndpoint, callbackHandler);
@@ -74,14 +80,21 @@ public class GloAPIHandler {
         request.asJsonAsync(callbackHandler);
     }
 
-    private void request(HttpMethod method, String endpoint, Map<String,String> body, Callback callbackHandler) {
+    private void request(HttpMethod method, String endpoint, Map<String,Object> body, Callback callbackHandler) {
         HttpRequest request = buildRequest(method, endpoint, body);
-        request.asJsonAsync(callbackHandler);
+
+        try {
+            HttpResponse<JsonNode> res = request.asJson();
+            res.getStatus();
+        } catch (UnirestException e) {
+            e.printStackTrace();
+        }
+        //request.asJsonAsync(callbackHandler);
     }
 
     // TODO: Handle get parameters
-    private HttpRequest buildRequest(HttpMethod method, String endpoint, Map<String, String> body) {
-        HttpRequest pendingRequest = null;
+    private HttpRequest buildRequest(HttpMethod method, String endpoint, Map<String, Object> body) {
+        HttpRequest pendingRequest;
         switch (method) {
             case GET:
                 pendingRequest = Unirest.get(endpoint);
@@ -99,10 +112,19 @@ public class GloAPIHandler {
         }
 
         if (body != null) {
-            for (String key : body.keySet()) {
-                ((HttpRequestWithBody) pendingRequest).field(key, body.get(key));
-            }
+            pendingRequest.header("accept", "application/json");
+            pendingRequest.header("Content-Type", "application/json");
+
+            String jsonBody = mapToJson(body);
+
+            ((HttpRequestWithBody) pendingRequest).body(jsonBody);
+            /*
+            ((HttpRequestWithBody) pendingRequest)
+                    .field("column_id", body.get("column_id").toString(), "application/json")
+                    .field("name", body.get("name").toString(), "application/json");
+            */
         }
+        Body b = pendingRequest.getBody();
         return pendingRequest;
     }
 
@@ -117,6 +139,24 @@ public class GloAPIHandler {
             }
         }
         return result;
+    }
+
+    private <T,V> String mapToJson(Map<T,V> items) {
+        String json = "{";
+
+        int numItems = items.size();
+        int currentItem = 0;
+
+        for (T key : items.keySet()) {
+            currentItem++;
+            json += "\"" + key.toString() + "\": \"" + items.get(key).toString() + "\"";
+
+            if (currentItem < items.size()) {
+                json += ",";
+            }
+        }
+        json += "}";
+        return json;
     }
 
 

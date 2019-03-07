@@ -11,8 +11,22 @@ public class Card {
         this.name = name;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getId() {
+        return id;
+    }
+
     @Override
     public String toString() {
         return name;
     }
+
+
 }
