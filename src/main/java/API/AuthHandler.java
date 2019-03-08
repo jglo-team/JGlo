@@ -1,6 +1,8 @@
 package API;
 
 import callbacks.AuthCallback;
+import com.intellij.credentialStore.CredentialAttributes;
+import com.intellij.ide.passwordSafe.PasswordSafe;
 import com.intellij.ide.util.PropertiesComponent;
 import io.socket.client.IO;
 import io.socket.client.Socket;
@@ -30,7 +32,8 @@ public class AuthHandler {
                 .on(Socket.EVENT_DISCONNECT, args -> System.out.println("Disconnected"))
                 .on("accessToken", args -> {
                     String accessToken = args[0].toString();
-                    PropertiesComponent.getInstance().setValue("accessToken", accessToken);
+//                    PropertiesComponent.getInstance().setValue("accessToken", accessToken);
+                    saveAccessToken(accessToken);
                     finalSocket.close();
                     callback.success();
                 })
@@ -41,8 +44,7 @@ public class AuthHandler {
                 .on(Socket.EVENT_CONNECT_ERROR, args -> {
                     finalSocket.close();
                     callback.error(CustomError.SOCKET_ERROR);
-                })
-        ;
+                });
 
         try {
             finalSocket.connect();
@@ -53,4 +55,13 @@ public class AuthHandler {
     }
 
 
+    private static void saveAccessToken(String accessToken) {
+        CredentialAttributes attributes = new CredentialAttributes("jglo:accessToken", "accessToken", AuthHandler.class, false);
+        PasswordSafe.getInstance().setPassword(attributes, accessToken);
+    }
+
+    public static String loadAccessToken() {
+        CredentialAttributes attributes = new CredentialAttributes("jglo:accessToken", "accessToken", AuthHandler.class, false);
+        return PasswordSafe.getInstance().getPassword(attributes);
+    }
 }

@@ -3,6 +3,9 @@ package API;
 
 import callbacks.AuthCallback;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.intellij.credentialStore.CredentialAttributes;
+import com.intellij.credentialStore.Credentials;
+import com.intellij.ide.passwordSafe.PasswordSafe;
 import com.intellij.ide.util.PropertiesComponent;
 import com.intellij.openapi.ui.Messages;
 import com.mashape.unirest.http.HttpMethod;
@@ -31,7 +34,7 @@ public class GloAPIHandler {
     private String userToken;
 
     public GloAPIHandler() {
-        userToken = PropertiesComponent.getInstance().getValue("accessToken");
+        userToken = AuthHandler.loadAccessToken();
         if (userToken == null) {
             triggerLogin(new AuthCallback() {
                 @Override
