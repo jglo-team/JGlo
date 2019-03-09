@@ -7,7 +7,7 @@ import com.intellij.openapi.ui.Messages;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.JsonNode;
 import models.Glo.Board;
-import models.JGloCallback;
+import callbacks.JGloCallback;
 import models.JGloHelper;
 
 

@@ -39,7 +39,10 @@ public class GloAPIHandler {
             triggerLogin(new AuthCallback() {
                 @Override
                 public void success() {
-
+                    userToken = AuthHandler.loadAccessToken();
+                    if (userToken == null) {
+                        // Error ocorred
+                    }
                 }
 
                 @Override

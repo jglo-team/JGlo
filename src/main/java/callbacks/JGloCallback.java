@@ -1,4 +1,4 @@
-package models;
+package callbacks;
 
 import com.intellij.openapi.ui.Messages;
 import com.mashape.unirest.http.async.Callback;

@@ -3,7 +3,7 @@ package UI;
 import API.GloAPIHandler;
 import models.Glo.Board;
 import models.Glo.Card;
-import models.JGloCallback;
+import callbacks.JGloCallback;
 
 import javax.swing.*;
 import java.awt.*;

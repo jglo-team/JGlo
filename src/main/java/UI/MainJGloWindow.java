@@ -11,7 +11,7 @@ import com.mashape.unirest.http.Unirest;
 import models.Glo.Board;
 import models.Glo.Card;
 import models.Glo.Column;
-import models.JGloCallback;
+import callbacks.JGloCallback;
 import models.JGloHelper;
 import org.json.JSONArray;
 import org.json.JSONObject;
