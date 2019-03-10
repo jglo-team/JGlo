@@ -30,7 +30,7 @@ public class JGloHelper {
                 result.add(newObject);
 
             } catch (Exception e) {
-
+                System.out.println(e.getStackTrace());
             }
         }
         return result;

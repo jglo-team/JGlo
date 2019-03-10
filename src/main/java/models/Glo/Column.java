@@ -7,7 +7,6 @@ import java.util.List;
 public class Column {
     String name;
     String id;
-    Date created_date;
 
     List<Card> cards;
 
@@ -15,11 +14,19 @@ public class Column {
         this.cards = new LinkedList<>();
     }
 
-    public Column(String name, String id, Date created_date) {
+    public Column(String name, String id) {
+        this();
         this.name = name;
         this.id = id;
-        this.created_date = created_date;
-        //this.created_by = created_by;
+
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getId() {

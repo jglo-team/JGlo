@@ -94,7 +94,7 @@ public class GloAPIHandler {
     }
 
     public void getBoardColumns(String id, Callback callbackHandler) {
-        String targetEndpoint = "/boards/" + id + "?fields=columns";
+        String targetEndpoint = "/boards/" + id + "?fields=name&fields=columns&fields=members";
         request(HttpMethod.GET, SERVER + targetEndpoint, callbackHandler);
     }
 

@@ -65,7 +65,7 @@ public class AddEditCardDialog extends JDialog {
     private void onCreate(String boardId, String columnId, JGloCallback callback) {
         // add your code here
         GloAPIHandler handler = new GloAPIHandler();
-        handler.createCard(boardId, columnId,new Card("", newCardNameTextField.getText()), callback);
+        handler.createCard(boardId, columnId,new Card("", null, newCardNameTextField.getText()), callback);
         dispose();
     }
 

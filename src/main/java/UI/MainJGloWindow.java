@@ -58,11 +58,12 @@ public class MainJGloWindow {
                     JSONObject responseJSON = body.getObject();
                     // TODO: Continue here
                     try {
-                        List<Column> columns = JGloHelper.parseJsonArray(responseJSON.getJSONArray("columns"), Column.class);
-                        selectedBoard.setColumns(columns);
-                        currentBoard = selectedBoard;
+                        //List<Column> columns = JGloHelper.parseJsonArray(responseJSON.getJSONArray("columns"), Column.class);
+                        //selectedBoard.setColumns(columns);
+                        Board b = JGloHelper.parseObjectJson(responseJSON, Board.class);
+                        currentBoard = b;
 
-                        populateTabs(selectedBoard.getId(), columns);
+                        populateTabs(currentBoard.getId(), currentBoard.getColumns());
 
                     } catch (Exception e) {
                         System.out.println(e.getMessage());
