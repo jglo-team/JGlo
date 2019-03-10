@@ -12,6 +12,11 @@ public class Card {
     public Card(String id, Description description, String name) {
         this.id = id;
         this.description = description;
+
+        if (description == null) {
+            this.description = new Description("");
+        }
+
         this.name = name;
     }
 

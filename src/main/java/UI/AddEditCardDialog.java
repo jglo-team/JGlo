@@ -4,6 +4,7 @@ import API.GloAPIHandler;
 import models.Glo.Board;
 import models.Glo.Card;
 import callbacks.JGloCallback;
+import models.Glo.Description;
 
 import javax.swing.*;
 import java.awt.*;
@@ -29,8 +30,11 @@ public class AddEditCardDialog extends JDialog {
         if (card != null) {
             buttonCreateEdit.setText("Edit");
             newCardNameTextField.setText(card.getName());
+            cardDescriptionTextArea.setText(card.getDescription().getText());
             buttonCreateEdit.addActionListener(e -> {
                 card.setName(newCardNameTextField.getText());
+                card.getDescription().setText(cardDescriptionTextArea.getText());
+
                 onEdit(targetBoard.getId(), card, callback);
             });
         } else {
@@ -63,9 +67,8 @@ public class AddEditCardDialog extends JDialog {
     }
 
     private void onCreate(String boardId, String columnId, JGloCallback callback) {
-        // add your code here
         GloAPIHandler handler = new GloAPIHandler();
-        handler.createCard(boardId, columnId,new Card("", null, newCardNameTextField.getText()), callback);
+        handler.createCard(boardId, columnId,new Card("", new Description(cardDescriptionTextArea.getText()), newCardNameTextField.getText()), callback);
         dispose();
     }
 

@@ -125,6 +125,11 @@ public class GloAPIHandler {
         request(HttpMethod.GET, SERVER + targetEndpoint, callbackHandler);
     }
 
+    public void deleteCard(String boardId, Card cardToDelete, Callback callbackHandler) {
+        String targetEndpoint = "/boards/" + boardId + "/cards/" + cardToDelete.getId();
+        request(HttpMethod.DELETE, SERVER + targetEndpoint, callbackHandler);
+    }
+
     private void request(HttpMethod method, String endpoint, Callback callbackHandler) {
         HttpRequest request = buildRequest(method, endpoint, null);
         request.asJsonAsync(callbackHandler);
@@ -132,14 +137,15 @@ public class GloAPIHandler {
 
     private void request(HttpMethod method, String endpoint, Map<String,Object> body, Callback callbackHandler) {
         HttpRequest request = buildRequest(method, endpoint, body);
-
+        /*
         try {
             HttpResponse<JsonNode> res = request.asJson();
             res.getStatus();
         } catch (UnirestException e) {
             e.printStackTrace();
         }
-        //request.asJsonAsync(callbackHandler);
+        */
+        request.asJsonAsync(callbackHandler);
     }
 
     // TODO: Handle get parameters
@@ -151,6 +157,9 @@ public class GloAPIHandler {
                 break;
             case POST:
                 pendingRequest = Unirest.post(endpoint);
+                break;
+            case DELETE:
+                pendingRequest = Unirest.delete(endpoint);
                 break;
             default:
                 pendingRequest = null;
@@ -165,45 +174,12 @@ public class GloAPIHandler {
             pendingRequest.header("accept", "application/json");
             pendingRequest.header("Content-Type", "application/json");
 
-            String jsonBody = mapToJson(body);
+            String jsonBody = JGloHelper.mapToJson(body);
 
             ((HttpRequestWithBody) pendingRequest).body(jsonBody);
         }
         return pendingRequest;
     }
-
-    public static Map<String, String> queryToMap(String query) {
-        Map<String, String> result = new HashMap<>();
-        for (String param : query.split("&")) {
-            String[] entry = param.split("=");
-            if (entry.length > 1) {
-                result.put(entry[0], entry[1]);
-            }else{
-                result.put(entry[0], "");
-            }
-        }
-        return result;
-    }
-
-    private <T,V> String mapToJson(Map<T,V> items) {
-        String json = "{";
-
-        int numItems = items.size();
-        int currentItem = 0;
-
-        for (T key : items.keySet()) {
-            currentItem++;
-            json += "\"" + key.toString() + "\": \"" + items.get(key).toString() + "\"";
-
-            if (currentItem < items.size()) {
-                json += ",";
-            }
-        }
-        json += "}";
-        return json;
-    }
-
-
 
     @Override
     protected void finalize() throws Throwable {

@@ -2,6 +2,7 @@ package UI;
 
 import API.GloAPIHandler;
 import com.intellij.icons.AllIcons;
+import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.ui.ToolbarDecorator;
 import com.intellij.ui.components.JBList;
@@ -30,6 +31,7 @@ public class MainJGloWindow {
 
     private List<Board> boards;
     private Board currentBoard;
+    private Column currentColumn;
 
     // TODO: Split change - https://www.jetbrains.org/intellij/sdk/docs/user_interface_components/misc_swing_components.html
     public MainJGloWindow(ToolWindow toolWindow) {
@@ -58,11 +60,7 @@ public class MainJGloWindow {
                     JSONObject responseJSON = body.getObject();
                     // TODO: Continue here
                     try {
-                        //List<Column> columns = JGloHelper.parseJsonArray(responseJSON.getJSONArray("columns"), Column.class);
-                        //selectedBoard.setColumns(columns);
-                        Board b = JGloHelper.parseObjectJson(responseJSON, Board.class);
-                        currentBoard = b;
-
+                        currentBoard = JGloHelper.parseObjectJson(responseJSON, Board.class);
                         populateTabs(currentBoard.getId(), currentBoard.getColumns());
 
                     } catch (Exception e) {
@@ -74,13 +72,13 @@ public class MainJGloWindow {
     }
 
     private void triggerDialog(Card card) {
-        AddEditCardDialog newDialog = new AddEditCardDialog(currentBoard, columnTabbedPane.getSelectedIndex(),card, new JGloCallback() {
+        int columnIndex = columnTabbedPane.getSelectedIndex() - 1;
+        AddEditCardDialog newDialog = new AddEditCardDialog(currentBoard, columnIndex,card, new JGloCallback() {
             @Override
             public void completed(HttpResponse response) {
-                int h = response.getStatus();
                 if (columnTabbedPane.getSelectedIndex() != 0) {
-                    Column column = currentBoard.getColumns().get(columnTabbedPane.getSelectedIndex());
-                    loadCards(currentBoard.getId(), column, columnTabbedPane.getSelectedIndex());
+                    Column column = currentBoard.getColumns().get(columnIndex);
+                    loadCards(currentBoard.getId(), column, columnIndex);
                 }
             }
         });
@@ -101,11 +99,12 @@ public class MainJGloWindow {
                 triggerDialog(null);
                 return;
             }
+            currentColumn = currentBoard.getColumns().get(selectedIndex - 1);
             Column selectedColumn = currentBoard.getColumns().get(selectedIndex - 1);
             loadCards(boardId, selectedColumn, selectedIndex);
         });
 
-        columnTabbedPane.setSelectedIndex(1);
+        //columnTabbedPane.setSelectedIndex(1);
     }
 
     private void loadCards(String boardId, Column column, int index) {
@@ -127,14 +126,15 @@ public class MainJGloWindow {
 
     private void populateTabContent(List<Card> cards, int index) {
         JPanel child = (JPanel) columnTabbedPane.getComponentAt(index);
+        if (index != 0) {
+            JPanel newPanel = costumizeList(new JBList(), cards, new Dimension(child.getWidth(), child.getHeight()), index);
 
-        JPanel newPanel = costumizeList(new JBList(), cards, new Dimension(child.getWidth(), child.getHeight()));
-
-        child.removeAll();
-        child.add(newPanel);
+            child.removeAll();
+            child.add(newPanel);
+        }
     }
 
-    private <T> JPanel costumizeList(JBList list, List<T> items, Dimension size) {
+    private <T> JPanel costumizeList(JBList list, List<T> items, Dimension size, int index) {
         JBList<T> cardJBList = new JBList<>();
         JGloHelper.initializeList(items, cardJBList);
         cardJBList.setBorder(null);
@@ -142,12 +142,23 @@ public class MainJGloWindow {
 
         decorator.setAddAction(anActionButton -> triggerDialog(null));
         decorator.setEditAction(anActionButton -> triggerDialog((Card) cardJBList.getSelectedValue()));
+        decorator.setRemoveAction(ActionButton -> deleteCard((Card) cardJBList.getSelectedValue(), index));
 
         decorator.setAsUsualTopToolbar();
         decorator.setMinimumSize(size);
         decorator.setPreferredSize(size);
 
         return decorator.createPanel();
+    }
+
+    private void deleteCard(Card cardToDelete, int index) {
+        apiHandler.deleteCard(currentBoard.getId(), cardToDelete, new JGloCallback() {
+            @Override
+            public void completed(HttpResponse response) {
+                loadCards(currentBoard.getId(), currentColumn, index);
+                JGloHelper.showMessage("Card deleted with success", "Info", Messages.getInformationIcon());
+            }
+        });
     }
 
     public JPanel getContent() {

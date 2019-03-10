@@ -1,17 +1,21 @@
 package models;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.ui.CollectionListModel;
 import com.intellij.ui.components.JBList;
+import models.Glo.Description;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import javax.swing.*;
 import java.lang.reflect.Type;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 public class JGloHelper {
     /*
@@ -55,4 +59,41 @@ public class JGloHelper {
         }
         listComponent.setModel(model);
     }
+
+    public static <T,V> String mapToJson(Map<T,V> items) {
+        String json = "{";
+
+        int currentItem = 0;
+
+        for (T key : items.keySet()) {
+            currentItem++;
+            if (items.get(key) instanceof Map) {
+                ObjectMapper mapper = new ObjectMapper();
+                Map<String, Object> innerMap = mapper.convertValue(items.get(key), Map.class);
+                json += "\"" + key.toString() + "\": " + mapToJson(innerMap);
+            } else {
+                json += "\"" + key.toString() + "\": \"" + items.get(key).toString() + "\"";
+            }
+
+            if (currentItem < items.size()) {
+                json += ",";
+            }
+        }
+        json += "}";
+        return json;
+    }
+
+    public static Map<String, String> queryToMap(String query) {
+        Map<String, String> result = new HashMap<>();
+        for (String param : query.split("&")) {
+            String[] entry = param.split("=");
+            if (entry.length > 1) {
+                result.put(entry[0], entry[1]);
+            }else{
+                result.put(entry[0], "");
+            }
+        }
+        return result;
+    }
+
 }
