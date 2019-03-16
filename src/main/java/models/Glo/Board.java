@@ -30,6 +30,15 @@ public class Board {
         this.members = members;
     }
 
+    public User getMember(String id) {
+        for (User member : members) {
+            if (member.getId().compareTo(id) == 0) {
+                return member;
+            }
+        }
+        return null;
+    }
+
     public List<User> getMembers() {
         return members;
     }

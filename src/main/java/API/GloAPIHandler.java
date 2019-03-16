@@ -121,7 +121,11 @@ public class GloAPIHandler {
     }
 
     public void getBoardCardsByColumn(String boardId, String columnId, Callback callbackHandler) {
-        String targetEndpoint = "/boards/" + boardId + "/columns/" + columnId + "/cards?fields=name&fields=description";
+        String targetEndpoint = "/boards/" +
+                boardId +
+                "/columns/" +
+                columnId +
+                "/cards?fields=name&fields=description&fields=assignees";
         request(HttpMethod.GET, SERVER + targetEndpoint, callbackHandler);
     }
 

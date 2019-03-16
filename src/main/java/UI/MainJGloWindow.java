@@ -13,6 +13,7 @@ import models.Glo.Board;
 import models.Glo.Card;
 import models.Glo.Column;
 import callbacks.JGloCallback;
+import models.Glo.User;
 import models.JGloHelper;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -115,6 +116,15 @@ public class MainJGloWindow {
                 try {
                     List<Card> cards = JGloHelper.parseJsonArray(body.getArray(), Card.class);
                     column.setCards(cards);
+
+                    // Filling card assignees
+                    for (Card card : cards) {
+                        for (User assignee : card.getAssignees()) {
+                            User member = currentBoard.getMember(assignee.getId());
+                            assignee.setUsername(member.getUsername());
+                            assignee.setRole(member.getRole());
+                        }
+                    }
 
                     populateTabContent(cards, index);
                 } catch (Exception e) {

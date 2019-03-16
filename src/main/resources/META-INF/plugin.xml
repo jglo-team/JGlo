@@ -1,6 +1,6 @@
 <idea-plugin>
     <id>com.happyteam.JGlo</id>
-    <name>JGlo</name>
+    <username>JGlo</username>
     <vendor url="https://github.com/AlexXandreE/JGlo/issues">JGlo</vendor>
 
     <description><![CDATA[

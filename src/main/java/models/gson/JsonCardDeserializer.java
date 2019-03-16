@@ -3,8 +3,10 @@ package models.gson;
 import com.google.gson.*;
 import models.Glo.Card;
 import models.Glo.Description;
+import models.Glo.User;
 
 import java.lang.reflect.Type;
+import java.util.LinkedList;
 
 
 // Custom deserializer for card object, this is necessary due to description field being an object
@@ -29,6 +31,23 @@ public class JsonCardDeserializer implements JsonDeserializer<Card> {
 
         } catch (IllegalArgumentException ie) {
             System.out.println(ie.getMessage());
+        }
+        // TODO: Get this from board instead
+        try {
+            JsonArray assigneesArrJson = obj.getAsJsonArray("assignees");
+            if (assigneesArrJson != null) {
+
+                LinkedList<User> assignees = new LinkedList<>();
+
+                for (JsonElement memberJson : assigneesArrJson) {
+                    assignees.add(new Gson().fromJson(memberJson.toString(), User.class));
+                }
+
+                card.setAssignees(assignees);
+            }
+
+        } catch (IllegalArgumentException e) {
+            System.out.println(e.getMessage());
         }
 
         return card;
