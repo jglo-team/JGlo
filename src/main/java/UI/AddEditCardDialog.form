@@ -64,9 +64,9 @@
               </grid>
             </constraints>
             <properties>
-              <caretPosition value="0"/>
-              <text value="New card username"/>
-              <toolTipText value="New card username"/>
+              <caretPosition value="13"/>
+              <text value="New card name"/>
+              <toolTipText value="New card name"/>
             </properties>
           </component>
           <component id="7effe" class="javax.swing.JTextArea" binding="cardDescriptionTextArea">
@@ -76,7 +76,7 @@
               </grid>
             </constraints>
             <properties>
-              <caretPosition value="0"/>
+              <caretPosition value="20"/>
               <text value="New card description"/>
             </properties>
           </component>
