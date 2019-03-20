@@ -63,12 +63,13 @@ public class Card {
 
         if (assignees.size() > 0) {
             stringBuilder.append(" - Assigned To: ");
+
             for (User assignee : assignees) {
-            stringBuilder.append(assignee.getUsername() + '|');
+                stringBuilder.append(assignee.getUsername() + " | ");
+            }
 
             String cardRep = stringBuilder.toString();
-                return cardRep.substring(0, cardRep.length() -1);
-            }
+            return cardRep.substring(0, cardRep.length() -3);
         }
 
         return stringBuilder.toString();

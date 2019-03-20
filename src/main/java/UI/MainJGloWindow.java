@@ -2,6 +2,7 @@ package UI;
 
 import API.GloAPIHandler;
 import com.intellij.icons.AllIcons;
+import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.ui.ToolbarDecorator;
@@ -125,8 +126,10 @@ public class MainJGloWindow {
                             assignee.setRole(member.getRole());
                         }
                     }
-
-                    populateTabContent(cards, index);
+                    // TODO: Make this appear in UI thread
+                    ApplicationManager.getApplication().invokeLater(() ->
+                       populateTabContent(cards, index)
+                    );
                 } catch (Exception e) {
                     System.out.println(e.getMessage());
                 }

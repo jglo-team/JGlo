@@ -141,14 +141,6 @@ public class GloAPIHandler {
 
     private void request(HttpMethod method, String endpoint, Map<String,Object> body, Callback callbackHandler) {
         HttpRequest request = buildRequest(method, endpoint, body);
-        /*
-        try {
-            HttpResponse<JsonNode> res = request.asJson();
-            res.getStatus();
-        } catch (UnirestException e) {
-            e.printStackTrace();
-        }
-        */
         request.asJsonAsync(callbackHandler);
     }
 
