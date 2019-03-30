@@ -51,8 +51,10 @@ public class MainJGloWindow {
 
     private void initializeComponents() {
         getBoards();
-
         boardList.addListSelectionListener(listSelectionEvent -> {
+            if (listSelectionEvent.getValueIsAdjusting())
+                return;
+
             Board selectedBoard = boards.get(boardList.getSelectedIndex());
 
             apiHandler.getBoardColumns(selectedBoard.getId(), new JGloCallback() {
@@ -73,6 +75,8 @@ public class MainJGloWindow {
                     }
                 }
             });
+
+
         });
     }
 
@@ -81,7 +85,7 @@ public class MainJGloWindow {
         AddEditCardDialog newDialog = new AddEditCardDialog(currentBoard, columnIndex, card, new JGloCallback() {
             @Override
             public void completed(HttpResponse response) {
-                if (columnTabbedPane.getSelectedIndex() != 0) {
+                if (columnTabbedPane.getSelectedIndex() > 0) {
                     Column column = currentBoard.getColumns().get(columnIndex);
                     loadCards(currentBoard.getId(), column, columnIndex);
                 }
@@ -97,12 +101,22 @@ public class MainJGloWindow {
 
         for (Column c : columns) {
             columnTabbedPane.addTab(c.getName(), new JPanel(new FlowLayout(FlowLayout.LEFT)));
-        }
 
+        }
+        // updating the listener boardID
+        if (columnTabbedPane.getChangeListeners().length > 0)
+            columnTabbedPane.removeChangeListener(columnTabbedPane.getChangeListeners()[0]);
+
+        setTabListeners(boardId);
+        this.firstSelect = false;
+
+    }
+
+    private void setTabListeners(String boardId) {
         columnTabbedPane.addChangeListener(changeEvent -> {
             int selectedIndex = columnTabbedPane.getSelectedIndex();
 
-            if (this.firstSelect) {
+            if (this.firstSelect || selectedIndex < 0) {
                 return;
             }
 
@@ -116,9 +130,6 @@ public class MainJGloWindow {
             Column selectedColumn = currentBoard.getColumns().get(selectedIndex - 1);
             loadCards(boardId, selectedColumn, selectedIndex);
         });
-        columnTabbedPane.updateUI();
-        this.firstSelect = true;
-
     }
 
     private void loadCards(String boardId, Column column, int index) {

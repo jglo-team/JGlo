@@ -13,7 +13,5 @@ public abstract class JGloCallback implements Callback {
     }
 
     @Override
-    public void cancelled() {
-        Messages.showMessageDialog("Canceled", "Callback error", Messages.getErrorIcon());
-    }
+    public void cancelled() { }
 }

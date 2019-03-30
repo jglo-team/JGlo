@@ -24,6 +24,7 @@ public class AddEditCardDialog extends JDialog {
         setModal(true);
         setPreferredSize(new Dimension(400,400));
         setMinimumSize(new Dimension(300, 250));
+
         setTitle("Add new card");
 
         // TODO: Handle card description
@@ -80,7 +81,8 @@ public class AddEditCardDialog extends JDialog {
     }
 
     private void onCancel(JGloCallback callback) {
-        //callback.cancelled();
         dispose();
+
+        callback.cancelled();
     }
 }
