@@ -71,6 +71,8 @@ public class JGloHelper {
                 ObjectMapper mapper = new ObjectMapper();
                 Map<String, Object> innerMap = mapper.convertValue(items.get(key), Map.class);
                 json += "\"" + key.toString() + "\": " + mapToJson(innerMap);
+            } else if (items.get(key) instanceof List) {
+                json += "\"" + key.toString() + "\": " + items.get(key).toString();
             } else {
                 json += "\"" + key.toString() + "\": \"" + items.get(key).toString() + "\"";
             }
