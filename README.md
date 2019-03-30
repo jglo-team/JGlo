@@ -2,7 +2,9 @@
 
 JGlo is a Intellij plugin that can interact with Glo boards.
 
-It's objective is to bring Glo Board operations closer to you, so that alt + tab is no longer used.
+It's objective is to bring Glo Board operations closer to you, so that "alt + tab" is no longer used.
+
+
 
 # Roadmap
 
