@@ -95,6 +95,10 @@ public class MainJGloWindow {
     }
 
     private void populateTabs(String boardId, List<Column> columns) {
+        // updating the listener boardID
+        if (columnTabbedPane.getChangeListeners().length > 0)
+            columnTabbedPane.removeChangeListener(columnTabbedPane.getChangeListeners()[0]);
+
         columnTabbedPane.removeAll();
 
         columnTabbedPane.addTab("", AllIcons.ToolbarDecorator.AddIcon, new JPanel(new FlowLayout(FlowLayout.LEFT)), "New column");
@@ -103,9 +107,7 @@ public class MainJGloWindow {
             columnTabbedPane.addTab(c.getName(), new JPanel(new FlowLayout(FlowLayout.LEFT)));
 
         }
-        // updating the listener boardID
-        if (columnTabbedPane.getChangeListeners().length > 0)
-            columnTabbedPane.removeChangeListener(columnTabbedPane.getChangeListeners()[0]);
+
 
         setTabListeners(boardId);
         this.firstSelect = false;
