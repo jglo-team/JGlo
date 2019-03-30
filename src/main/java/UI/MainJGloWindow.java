@@ -34,6 +34,7 @@ public class MainJGloWindow {
     private List<Board> boards;
     private Board currentBoard;
     private Column currentColumn;
+    private Boolean firstSelect = false;
 
     // TODO: Split change - https://www.jetbrains.org/intellij/sdk/docs/user_interface_components/misc_swing_components.html
     public MainJGloWindow(ToolWindow toolWindow) {
@@ -52,7 +53,7 @@ public class MainJGloWindow {
         getBoards();
 
         boardList.addListSelectionListener(listSelectionEvent -> {
-            Board selectedBoard = boards.get(listSelectionEvent.getLastIndex());
+            Board selectedBoard = boards.get(boardList.getSelectedIndex());
 
             apiHandler.getBoardColumns(selectedBoard.getId(), new JGloCallback() {
                 @Override
@@ -60,10 +61,12 @@ public class MainJGloWindow {
                     JsonNode body = (JsonNode) response.getBody();
 
                     JSONObject responseJSON = body.getObject();
-                    // TODO: Continue here
                     try {
                         currentBoard = JGloHelper.parseObjectJson(responseJSON, Board.class);
-                        populateTabs(currentBoard.getId(), currentBoard.getColumns());
+
+                        ApplicationManager.getApplication().invokeLater(() ->
+                            populateTabs(currentBoard.getId(), currentBoard.getColumns())
+                        );
 
                     } catch (Exception e) {
                         System.out.println(e.getMessage());
@@ -75,7 +78,7 @@ public class MainJGloWindow {
 
     private void triggerDialog(Card card) {
         int columnIndex = columnTabbedPane.getSelectedIndex() - 1;
-        AddEditCardDialog newDialog = new AddEditCardDialog(currentBoard, columnIndex,card, new JGloCallback() {
+        AddEditCardDialog newDialog = new AddEditCardDialog(currentBoard, columnIndex, card, new JGloCallback() {
             @Override
             public void completed(HttpResponse response) {
                 if (columnTabbedPane.getSelectedIndex() != 0) {
@@ -90,23 +93,32 @@ public class MainJGloWindow {
     private void populateTabs(String boardId, List<Column> columns) {
         columnTabbedPane.removeAll();
 
-        columnTabbedPane.addTab("", AllIcons.ToolbarDecorator.AddIcon,new JPanel(new FlowLayout(FlowLayout.LEFT)));
+        columnTabbedPane.addTab("", AllIcons.ToolbarDecorator.AddIcon, new JPanel(new FlowLayout(FlowLayout.LEFT)), "New column");
 
-        for (Column c: columns) {
+        for (Column c : columns) {
             columnTabbedPane.addTab(c.getName(), new JPanel(new FlowLayout(FlowLayout.LEFT)));
         }
+
         columnTabbedPane.addChangeListener(changeEvent -> {
             int selectedIndex = columnTabbedPane.getSelectedIndex();
+
+            if (this.firstSelect) {
+                return;
+            }
+
+
             if (selectedIndex == 0) {
                 triggerDialog(null);
                 return;
             }
+
             currentColumn = currentBoard.getColumns().get(selectedIndex - 1);
             Column selectedColumn = currentBoard.getColumns().get(selectedIndex - 1);
             loadCards(boardId, selectedColumn, selectedIndex);
         });
+        columnTabbedPane.updateUI();
+        this.firstSelect = true;
 
-        //columnTabbedPane.setSelectedIndex(1);
     }
 
     private void loadCards(String boardId, Column column, int index) {
@@ -126,9 +138,8 @@ public class MainJGloWindow {
                             assignee.setRole(member.getRole());
                         }
                     }
-                    // TODO: Make this appear in UI thread
                     ApplicationManager.getApplication().invokeLater(() ->
-                       populateTabContent(cards, index)
+                            populateTabContent(cards, index)
                     );
                 } catch (Exception e) {
                     System.out.println(e.getMessage());
@@ -140,14 +151,14 @@ public class MainJGloWindow {
     private void populateTabContent(List<Card> cards, int index) {
         JPanel child = (JPanel) columnTabbedPane.getComponentAt(index);
         if (index != 0) {
-            JPanel newPanel = costumizeList(new JBList(), cards, new Dimension(child.getWidth(), child.getHeight()), index);
+            JPanel newPanel = customizeList(cards, new Dimension(child.getWidth(), child.getHeight()), index);
 
             child.removeAll();
             child.add(newPanel);
         }
     }
 
-    private <T> JPanel costumizeList(JBList list, List<T> items, Dimension size, int index) {
+    private <T> JPanel customizeList(List<T> items, Dimension size, int index) {
         JBList<T> cardJBList = new JBList<>();
         JGloHelper.initializeList(items, cardJBList);
         cardJBList.setBorder(null);
@@ -182,9 +193,8 @@ public class MainJGloWindow {
         apiHandler.getBoards(new JGloCallback() {
             @Override
             public void completed(HttpResponse response) {
-                JsonNode body =  (JsonNode) response.getBody();
+                JsonNode body = (JsonNode) response.getBody();
                 JSONArray columnsArray = body.getArray();
-
                 try {
                     boards = JGloHelper.parseJsonArray(columnsArray, Board.class);
                     JGloHelper.initializeList(boards, boardList);

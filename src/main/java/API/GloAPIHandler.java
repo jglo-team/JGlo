@@ -35,6 +35,8 @@ public class GloAPIHandler {
 
     public GloAPIHandler() {
         userToken = AuthHandler.loadAccessToken();
+
+        /*
         if (userToken == null) {
             triggerLogin(new AuthCallback() {
                 @Override
@@ -53,6 +55,7 @@ public class GloAPIHandler {
                 }
             });
         }
+        */
     }
 
     public void triggerLogin(AuthCallback callback) {
