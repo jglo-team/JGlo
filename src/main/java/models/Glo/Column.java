@@ -14,11 +14,14 @@ public class Column {
         this.cards = new LinkedList<>();
     }
 
-    public Column(String name, String id) {
+    public Column(String name) {
         this();
         this.name = name;
-        this.id = id;
+    }
 
+    public Column(String name, String id) {
+        this(name);
+        this.id = id;
     }
 
     public void setName(String name) {

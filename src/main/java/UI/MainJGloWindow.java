@@ -83,7 +83,7 @@ public class MainJGloWindow {
     }
 
     private void triggerColumnDialog() {
-        CreateColumnDialog newDialog = new CreateColumnDialog(null, new JGloCallback() {
+        CreateColumnDialog newDialog = new CreateColumnDialog(currentBoard.getId(), null, new JGloCallback() {
             @Override
             public void completed(HttpResponse response) {
                 switch (response.getStatus()) {

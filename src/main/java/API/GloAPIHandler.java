@@ -18,6 +18,7 @@ import com.mashape.unirest.request.HttpRequest;
 import com.mashape.unirest.request.HttpRequestWithBody;
 import models.CustomError;
 import models.Glo.Card;
+import models.Glo.Column;
 import models.JGloHelper;
 import models.SecureTokenGenerator;
 
@@ -132,6 +133,17 @@ public class GloAPIHandler {
         request(HttpMethod.GET, SERVER + targetEndpoint, callbackHandler);
     }
 
+    public void createColumn(String boardId, Column column, Callback callbackHandler) {
+        String targetEndpoint = "/boards/" + boardId + "/columns";
+        column.setCards(null);
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        Map<String, Object> map = objectMapper.convertValue(column, Map.class);
+
+        request(HttpMethod.POST, SERVER + targetEndpoint, map, callbackHandler);
+
+    }
+
     public void deleteCard(String boardId, Card cardToDelete, Callback callbackHandler) {
         String targetEndpoint = "/boards/" + boardId + "/cards/" + cardToDelete.getId();
         request(HttpMethod.DELETE, SERVER + targetEndpoint, callbackHandler);
@@ -185,4 +197,6 @@ public class GloAPIHandler {
         super.finalize();
 
     }
+
+
 }

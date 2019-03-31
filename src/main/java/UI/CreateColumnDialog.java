@@ -1,7 +1,10 @@
 package UI;
 
+import API.GloAPIHandler;
 import callbacks.JGloCallback;
+import models.Glo.Card;
 import models.Glo.Column;
+import models.Glo.Description;
 
 import javax.swing.*;
 import java.awt.*;
@@ -9,19 +12,20 @@ import java.awt.event.*;
 
 public class CreateColumnDialog extends JDialog {
     private JPanel contentPane;
-    private JButton buttonOK;
+    private JButton buttonCreate;
     private JButton buttonCancel;
     private JTextField newColumnNameTextField;
 
-    public CreateColumnDialog(Column column, JGloCallback callback) {
+    public CreateColumnDialog(String boardId, Column column, JGloCallback callback) {
         setContentPane(contentPane);
         setModal(true);
-        setPreferredSize(new Dimension(300,120));
-        setMinimumSize(new Dimension(300, 120));
-        getRootPane().setDefaultButton(buttonOK);
 
-        buttonOK.addActionListener(e -> onOK());
+        getRootPane().setDefaultButton(buttonCreate);
+        setToSize();
 
+        // TODO: Add edit operation
+
+        buttonCreate.addActionListener(e -> onOK(boardId, callback));
         buttonCancel.addActionListener(e -> onCancel(callback));
 
         // call onCancel() when cross is clicked
@@ -34,12 +38,14 @@ public class CreateColumnDialog extends JDialog {
 
         // call onCancel() on ESCAPE
         contentPane.registerKeyboardAction(e -> onCancel(callback), KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
-        setToSize();
         setTitle("Add new column");
 
     }
 
     private void setToSize() {
+        setPreferredSize(new Dimension(300,120));
+        setMinimumSize(new Dimension(300, 120));
+
         Toolkit toolkit = Toolkit.getDefaultToolkit();
         final Dimension screenSize = toolkit.getScreenSize();
         final int x = (screenSize.width - this.getWidth()) / 2;
@@ -47,8 +53,9 @@ public class CreateColumnDialog extends JDialog {
         setLocation(x, y);
     }
 
-    private void onOK() {
-        // add your code here
+    private void onOK(String boardId, JGloCallback callback) {
+        GloAPIHandler handler = new GloAPIHandler();
+        handler.createColumn(boardId, new Column(newColumnNameTextField.getText()), callback);
         dispose();
     }
 
