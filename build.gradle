@@ -3,8 +3,8 @@ plugins {
     id 'org.jetbrains.intellij' version '0.4.3'
 }
 
-group 'com.happyteam'
-version '1.0-Development'
+group 'com.jglo-team'
+version '1.0-Production'
 
 sourceCompatibility = 1.8
 
@@ -22,8 +22,15 @@ dependencies {
 intellij {
     version '2018.3.4'
 }
-patchPluginXml {
-    changeNotes """
-      Add change notes here.<br>
-      <em>most HTML tags may be used</em>"""
+
+jar {
+    from {
+        configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+}
+
+task customFatJar(type: Jar) {
+    baseName = 'all-in-one-jar'
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+    with jar
 }

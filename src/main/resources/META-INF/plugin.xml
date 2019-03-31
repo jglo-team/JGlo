@@ -1,7 +1,7 @@
 <idea-plugin>
-    <id>com.happyteam.JGlo</id>
+    <id>com.jglo-team.JGlo</id>
     <name>JGlo</name>
-    <vendor url="https://github.com/AlexXandreE/JGlo/issues">JGlo</vendor>
+    <vendor url="https://github.com/jglo-team/JGlo">JGlo</vendor>
 
     <description><![CDATA[
         GitKraken Glo Boards integration tool for IntelJ IDE.
