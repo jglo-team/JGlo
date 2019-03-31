@@ -23,6 +23,7 @@ Extra features:
 + [ ] Images
 + [ ] Labels
 + [ ] Notifications
++ [ ] Create card with "TODO" 
 
 # About us
 We are two students that though 5 + projects were not enough, so we started this plugin.
