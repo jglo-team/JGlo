@@ -296,9 +296,9 @@ public class MainJGloWindow implements ApiRequestHandler {
                             DefaultActionGroup actionPopupGroup = new DefaultActionGroup("JGloPopUpGroup", true);
                             actionPopupGroup.add(new CreateBoardAction());
                             ActionPopupMenu popupMenu;
-                            if (boardList.getSelectedIndex() != -1) {
-                                actionPopupGroup.add(new DeleteBoardAction());
-                            }
+//                            if (boardList.getSelectedIndex() != -1) {
+//                                actionPopupGroup.add(new DeleteBoardAction());
+//                            }
 
                             popupMenu = ActionManager.getInstance().createActionPopupMenu("POPUP", actionPopupGroup);
 
