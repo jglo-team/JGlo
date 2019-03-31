@@ -55,10 +55,21 @@ public class AuthHandler {
     }
 
 
+
     private static void saveAccessToken(String accessToken) {
         CredentialAttributes attributes = new CredentialAttributes("jglo:accessToken", "accessToken", AuthHandler.class, false);
         PasswordSafe.getInstance().setPassword(attributes, accessToken);
     }
+
+    public static void logOut(){
+        saveAccessToken(null);
+    }
+
+    public static boolean isLoggedIn(){
+        String accessToken = loadAccessToken();
+        return accessToken != null;
+    }
+
 
     public static String loadAccessToken() {
         CredentialAttributes attributes = new CredentialAttributes("jglo:accessToken", "accessToken", AuthHandler.class, false);

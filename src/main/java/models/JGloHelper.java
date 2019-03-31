@@ -30,7 +30,7 @@ public class JGloHelper {
 
             Gson gson = new Gson();
             try {
-                TargetClass newObject = gson.fromJson(jsonObject.toString(),(Type) modelClass);
+                TargetClass newObject = gson.fromJson(jsonObject.toString(), (Type) modelClass);
                 result.add(newObject);
 
             } catch (Exception e) {
@@ -42,44 +42,54 @@ public class JGloHelper {
 
     public static <TargetClass> TargetClass parseObjectJson(JSONObject jsonData, Class modelClass) {
         Gson gson = new Gson();
-        return gson.fromJson(jsonData.toString(),(Type) modelClass);
+        return gson.fromJson(jsonData.toString(), (Type) modelClass);
     }
 
 
     public static void showMessage(String message, String title, Icon icon) {
         ApplicationManager.getApplication().invokeLater(() ->
                 Messages.showMessageDialog(message, title, icon)
-         );
+        );
     }
 
     public static <T> void initializeList(List<T> items, JBList listComponent) {
         ListModel model = new CollectionListModel();
-        for(T obj : items) {
+        for (T obj : items) {
             ((CollectionListModel) model).add(obj);
         }
         listComponent.setModel(model);
     }
 
-    public static <T,V> String mapToJson(Map<T,V> items) {
+    public static <T, V> String mapToJson(Map<T, V> items) {
         String json = "{";
 
         int currentItem = 0;
+        boolean deleted = false;
 
         for (T key : items.keySet()) {
             currentItem++;
+            if (items.get(key) == null) {
+                if (!deleted) {
+                    deleted = true;
+                    json = json.substring(0, json.length() - 1);
+                }
+                continue;
+            }
+
             if (items.get(key) instanceof Map) {
                 ObjectMapper mapper = new ObjectMapper();
                 Map<String, Object> innerMap = mapper.convertValue(items.get(key), Map.class);
                 json += "\"" + key.toString() + "\": " + mapToJson(innerMap);
-            } else if (items.get(key) instanceof List) {
-                json += "\"" + key.toString() + "\": " + items.get(key).toString();
-            } else {
-                json += "\"" + key.toString() + "\": \"" + items.get(key).toString() + "\"";
-            }
 
-            if (currentItem < items.size()) {
+            } else if (items.get(key) instanceof List)
+                json += "\"" + key.toString() + "\": " + items.get(key).toString();
+
+            else json += "\"" + key.toString() + "\": \"" + items.get(key).toString() + "\"";
+
+            deleted = false;
+            if (currentItem < items.size())
                 json += ",";
-            }
+
         }
         json += "}";
         return json;
@@ -91,7 +101,7 @@ public class JGloHelper {
             String[] entry = param.split("=");
             if (entry.length > 1) {
                 result.put(entry[0], entry[1]);
-            }else{
+            } else {
                 result.put(entry[0], "");
             }
         }
