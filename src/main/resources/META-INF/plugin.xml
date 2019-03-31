@@ -31,11 +31,8 @@
             <action id="JGlo.BoardsAction.Logout" class="actions.LogoutAction" text="Logout" description="Logout" />
 
             <separator/>
-            <action id="JGlo.BoardsAction.CreateBoard" class="actions.CreateBoardAction" text="Create Board" description="Create Board" />
+            <action id="JGlo.BoardsAction.CreateBoard" class="actions.CreateBoardAction" />
         </group>
-
-
-
 
     </actions>
 </idea-plugin>

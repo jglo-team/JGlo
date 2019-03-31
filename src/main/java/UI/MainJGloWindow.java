@@ -1,9 +1,14 @@
 package UI;
 
 import API.GloAPIHandler;
+import actions.CreateBoardAction;
+import actions.DeleteBoardAction;
 import com.intellij.icons.AllIcons;
 import com.intellij.ide.IdeBundle;
+import com.intellij.openapi.actionSystem.ActionManager;
+import com.intellij.openapi.actionSystem.ActionPopupMenu;
 import com.intellij.openapi.actionSystem.AnActionEvent;
+import com.intellij.openapi.actionSystem.DefaultActionGroup;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.ui.popup.JBPopupFactory;
@@ -11,6 +16,7 @@ import com.intellij.openapi.ui.popup.ListPopupStep;
 import com.intellij.openapi.ui.popup.PopupStep;
 import com.intellij.openapi.ui.popup.util.BaseListPopupStep;
 import com.intellij.openapi.wm.ToolWindow;
+import com.intellij.ui.PopupHandler;
 import com.intellij.ui.AnActionButton;
 import com.intellij.ui.ToolbarDecorator;
 import com.intellij.ui.components.JBList;
@@ -19,6 +25,7 @@ import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.JsonNode;
 import com.mashape.unirest.http.Unirest;
 import interfaces.ApiRequestHandler;
+import javafx.scene.input.MouseButton;
 import models.Glo.Board;
 import models.Glo.Card;
 import models.Glo.Column;
@@ -26,11 +33,17 @@ import callbacks.JGloCallback;
 import models.Glo.User;
 import models.JGloHelper;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import javax.swing.*;
+import javax.swing.event.PopupMenuEvent;
+import javax.swing.event.PopupMenuListener;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -48,7 +61,6 @@ public class MainJGloWindow implements ApiRequestHandler {
 
     // TODO: Split change - https://www.jetbrains.org/intellij/sdk/docs/user_interface_components/misc_swing_components.html
     public MainJGloWindow(ToolWindow toolWindow) {
-        apiHandler = new GloAPIHandler();
         this.boards = new LinkedList<>();
         this.initializeComponents();
     }
@@ -59,7 +71,8 @@ public class MainJGloWindow implements ApiRequestHandler {
         Unirest.shutdown();
     }
 
-    private void initializeComponents() {
+    public void initializeComponents() {
+        apiHandler = new GloAPIHandler();
         getBoards();
         boardList.addListSelectionListener(listSelectionEvent -> {
             if (listSelectionEvent.getValueIsAdjusting())
@@ -270,6 +283,39 @@ public class MainJGloWindow implements ApiRequestHandler {
 
     public JPanel getContent() {
         mainPanel.setMainJGloWindow(this);
+
+        boardList.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (SwingUtilities.isRightMouseButton(e)) {
+
+                    PopupHandler popupHandler = new PopupHandler() {
+                        @Override
+                        public void invokePopup(Component comp, int x, int y) {
+
+                            DefaultActionGroup actionPopupGroup = new DefaultActionGroup("JGloPopUpGroup", true);
+                            actionPopupGroup.add(new CreateBoardAction());
+                            ActionPopupMenu popupMenu;
+                            if (boardList.getSelectedIndex() != -1) {
+                                actionPopupGroup.add(new DeleteBoardAction());
+                            }
+
+                            popupMenu = ActionManager.getInstance().createActionPopupMenu("POPUP", actionPopupGroup);
+
+                            popupMenu.setTargetComponent(boardList);
+                            JPopupMenu menu = popupMenu.getComponent();
+
+                            menu.show(comp, x, y);
+                        }
+                    };
+                    boardList.addMouseListener(popupHandler);
+
+                }
+
+                super.mouseClicked(e);
+            }
+        });
+
         return mainPanel;
     }
 
@@ -288,7 +334,4 @@ public class MainJGloWindow implements ApiRequestHandler {
         });
     }
 
-    private void createUIComponents() {
-        // TODO: place custom component creation code here
-    }
 }

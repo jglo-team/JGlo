@@ -7,6 +7,7 @@ import com.intellij.ide.util.PropertiesComponent;
 import com.intellij.openapi.actionSystem.ActionManager;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
+import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.Messages;
 import models.CustomError;
 import models.JGloHelper;
@@ -16,14 +17,15 @@ public class LoginAction extends AnAction {
     @Override
     public void actionPerformed(@NotNull AnActionEvent e) {
 
-        AnAction logOutAction = ActionManager.getInstance().getAction("Glo.BoardsAction.Logout");
-
-
         GloAPIHandler handler = new GloAPIHandler();
         handler.triggerLogin(new AuthCallback() {
             @Override
             public void success() {
                 JGloHelper.showMessage("You can now enjoy JGlo!", "Logged in", Messages.getInformationIcon());
+                Project project = e.getProject();
+                if (project != null){
+                    JGloHelper.getMainWindow(e.getProject()).initializeComponents();
+                }
             }
 
             @Override
