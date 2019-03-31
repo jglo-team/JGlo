@@ -18,9 +18,13 @@ public class Board {
         this.columns = new LinkedList<>();
     }
 
-    public Board(String name, String id) {
+    public Board(String name) {
         this();
         this.name = name;
+    }
+
+    public Board(String name, String id) {
+        this(name);
         this.id = id;
     }
 

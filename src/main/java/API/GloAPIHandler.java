@@ -17,6 +17,7 @@ import com.mashape.unirest.http.exceptions.UnirestException;
 import com.mashape.unirest.request.HttpRequest;
 import com.mashape.unirest.request.HttpRequestWithBody;
 import models.CustomError;
+import models.Glo.Board;
 import models.Glo.Card;
 import models.JGloHelper;
 import models.SecureTokenGenerator;
@@ -89,6 +90,18 @@ public class GloAPIHandler {
     public void getBoards(Callback callbackHandler) {
         String targetEndpoint = "/boards";
         request(HttpMethod.GET, SERVER + targetEndpoint, callbackHandler);
+    }
+
+    public void createBoard(Board newBoard, Callback callbackHandler) {
+        String targetEndpoint = "/boards";
+
+        // Cleaning object to correspond to API specification
+        newBoard.setMembers(null);
+        newBoard.setColumns(null);
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        Map<String, Object> map = objectMapper.convertValue(newBoard, Map.class);
+        request(HttpMethod.POST, SERVER + targetEndpoint, map, callbackHandler);
     }
 
     public void getBoardById(String id, Callback callbackHandler) {
