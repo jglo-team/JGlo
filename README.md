@@ -14,8 +14,10 @@ Basic operations:
 + [x] Edit cards
 + [x] Delete cards
 + [x] Create columns
++ [x] Move cards
 + [ ] Assignees
 + [ ] Due date
++ [ ] Right click operations
 
 
 Extra features:
@@ -24,6 +26,8 @@ Extra features:
 + [ ] Labels
 + [ ] Notifications
 + [ ] Create card with "TODO" 
++ [ ] Shortcuts 
+
 
 # About us
 We are two students that though 5 + projects were not enough, so we started this plugin.
