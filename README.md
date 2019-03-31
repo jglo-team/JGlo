@@ -13,7 +13,7 @@ Basic operations:
 + [x] Create cards
 + [x] Edit cards
 + [x] Delete cards
-+ [ ] Create columns
++ [x] Create columns
 + [ ] Assignees
 + [ ] Due date
 
