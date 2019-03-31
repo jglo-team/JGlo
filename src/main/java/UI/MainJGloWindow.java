@@ -82,6 +82,34 @@ public class MainJGloWindow {
 
     }
 
+    private void triggerColumnDialog() {
+        CreateColumnDialog newDialog = new CreateColumnDialog(null, new JGloCallback() {
+            @Override
+            public void completed(HttpResponse response) {
+                switch (response.getStatus()) {
+                    case 200:
+                    case 201:
+                        getColumns(currentBoard.getId());
+                        break;
+                    case 400:
+                        JGloHelper.showMessage("Bad request", "Error", Messages.getErrorIcon());
+                        break;
+                    case 500:
+                        JGloHelper.showMessage("Server error", "Error", Messages.getErrorIcon());
+                    default:
+                        JGloHelper.showMessage("Unknow error", "Error", Messages.getErrorIcon());
+                }
+            }
+
+            @Override
+            public void cancelled() {
+                super.cancelled();
+                columnTabbedPane.setSelectedIndex(-1);
+            }
+        });
+        newDialog.setVisible(true);
+    }
+
     private void triggerCardDialog(Card card, int index) {
         AddEditCardDialog newDialog = new AddEditCardDialog(currentBoard, index - 1, card, new JGloCallback() {
             @Override
@@ -141,7 +169,7 @@ public class MainJGloWindow {
             }
 
             if (selectedIndex == 0) {
-                //triggerCardDialog(null);
+                triggerColumnDialog();
                 return;
             }
 
