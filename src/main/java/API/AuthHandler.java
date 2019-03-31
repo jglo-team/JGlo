@@ -26,7 +26,6 @@ public class AuthHandler {
         Socket finalSocket = socket;
         finalSocket
                 .on(Socket.EVENT_CONNECT, args -> {
-                    System.out.println(token);
                     finalSocket.emit("token:set", token);
                 })
                 .on(Socket.EVENT_DISCONNECT, args -> System.out.println("Disconnected"))
