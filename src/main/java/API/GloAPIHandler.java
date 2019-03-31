@@ -131,9 +131,18 @@ public class GloAPIHandler {
 
     public void editCard(String boardId, Card card, Callback callbackHandler) {
         String targetEndpoint = "/boards/" + boardId + "/cards/" + card.getId();
+
         ObjectMapper objectMapper = new ObjectMapper();
         Map<String, Object> map = objectMapper.convertValue(card, Map.class);
+        request(HttpMethod.POST, SERVER + targetEndpoint, map, callbackHandler);
+    }
 
+    public void moveCard(String boardId, String targetColumnId, Card card, Callback callbackHandler) {
+        String targetEndpoint = "/boards/" + boardId + "/cards/" + card.getId();
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        Map<String, Object> map = objectMapper.convertValue(card, Map.class);
+        map.put("column_id", targetColumnId);
         request(HttpMethod.POST, SERVER + targetEndpoint, map, callbackHandler);
     }
 

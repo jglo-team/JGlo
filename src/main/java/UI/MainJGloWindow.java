@@ -2,11 +2,19 @@ package UI;
 
 import API.GloAPIHandler;
 import com.intellij.icons.AllIcons;
+import com.intellij.ide.IdeBundle;
+import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.ui.Messages;
+import com.intellij.openapi.ui.popup.JBPopupFactory;
+import com.intellij.openapi.ui.popup.ListPopupStep;
+import com.intellij.openapi.ui.popup.PopupStep;
+import com.intellij.openapi.ui.popup.util.BaseListPopupStep;
 import com.intellij.openapi.wm.ToolWindow;
+import com.intellij.ui.AnActionButton;
 import com.intellij.ui.ToolbarDecorator;
 import com.intellij.ui.components.JBList;
+import com.intellij.util.PlatformIcons;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.JsonNode;
 import com.mashape.unirest.http.Unirest;
@@ -17,6 +25,7 @@ import models.Glo.Column;
 import callbacks.JGloCallback;
 import models.Glo.User;
 import models.JGloHelper;
+import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -198,10 +207,10 @@ public class MainJGloWindow implements ApiRequestHandler {
 
     private void populateTabContent(List<Card> cards, int index) {
         JPanel child = (JPanel) columnTabbedPane.getComponentAt(index);
-            JPanel newPanel = customizeList(cards, new Dimension(child.getWidth(), child.getHeight()), index);
+        JPanel newPanel = customizeList(cards, new Dimension(child.getWidth(), child.getHeight()), index);
 
-            child.removeAll();
-            child.add(newPanel);
+        child.removeAll();
+        child.add(newPanel);
     }
 
     private <T> JPanel customizeList(List<T> items, Dimension size, int index) {
@@ -213,6 +222,34 @@ public class MainJGloWindow implements ApiRequestHandler {
         decorator.setAddAction(anActionButton -> triggerCardDialog(null, index));
         decorator.setEditAction(anActionButton -> triggerCardDialog((Card) cardJBList.getSelectedValue(), index));
         decorator.setRemoveAction(ActionButton -> deleteCard((Card) cardJBList.getSelectedValue(), index));
+
+        AnActionButton moveAction = new ToolbarDecorator.ElementActionButton(IdeBundle.message("button.copy"), AllIcons.Actions.MoveTo2) {
+            @Override
+            public void actionPerformed(AnActionEvent e) {
+                // TODO: Continue
+
+                ListPopupStep step = new BaseListPopupStep("Move card to:", currentBoard.getColumns()) {
+                    @Override
+                    public PopupStep onChosen(Object selectedValue, boolean finalChoice) {
+                        //super.onChosen(selectedValue, finalChoice);
+                        if (finalChoice) {
+                            Column selectedColumn = (Column) selectedValue;
+
+                            apiHandler.moveCard(currentBoard.getId(), selectedColumn.getId(), (Card) cardJBList.getSelectedValue(), new JGloCallback() {
+                                @Override
+                                public void completed(HttpResponse response) {
+                                    loadCards(currentBoard.getId(), currentColumn, index);
+                                }
+                            });
+                        }
+                        return super.onChosen(selectedValue, finalChoice);
+                    }
+                };
+
+                JBPopupFactory.getInstance().createListPopup(step).showInBestPositionFor(e.getDataContext());
+            }
+        };
+        decorator.addExtraAction(moveAction);
 
         decorator.setAsUsualTopToolbar();
         decorator.setMinimumSize(size);

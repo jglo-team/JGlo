@@ -1,9 +1,8 @@
 package UI;
 
 import javax.swing.*;
-import java.beans.JavaBean;
-
-@JavaBean(defaultProperty = "UI", description = "A generic lightweight container.")
+//import java.beans.JavaBean;
+//@JavaBean(defaultProperty = "UI", description = "A generic lightweight container.")
 public class JGloJPanel extends JPanel {
 
     private MainJGloWindow mainJGloWindow;
