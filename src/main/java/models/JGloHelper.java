@@ -52,6 +52,8 @@ public class JGloHelper {
         );
     }
 
+
+
     public static <T> void initializeList(List<T> items, JBList listComponent) {
         ListModel model = new CollectionListModel();
         for (T obj : items) {

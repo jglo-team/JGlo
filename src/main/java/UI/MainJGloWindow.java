@@ -10,6 +10,7 @@ import com.intellij.ui.components.JBList;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.JsonNode;
 import com.mashape.unirest.http.Unirest;
+import interfaces.ApiRequestHandler;
 import models.Glo.Board;
 import models.Glo.Card;
 import models.Glo.Column;
@@ -24,9 +25,9 @@ import java.awt.*;
 import java.util.LinkedList;
 import java.util.List;
 
-public class MainJGloWindow {
+public class MainJGloWindow implements ApiRequestHandler {
     private GloAPIHandler apiHandler;
-    private JPanel mainPanel;
+    private JGloJPanel mainPanel;
     private JBList boardList;
     private JTabbedPane columnTabbedPane;
     private JSplitPane splitPlane;
@@ -86,18 +87,8 @@ public class MainJGloWindow {
         AddEditCardDialog newDialog = new AddEditCardDialog(currentBoard, index - 1, card, new JGloCallback() {
             @Override
             public void completed(HttpResponse response) {
-                switch (response.getStatus()) {
-                    case 200:
-                    case 201:
-                        loadCards(currentBoard.getId(), currentColumn, index);
-                        break;
-                    case 400:
-                        JGloHelper.showMessage("Bad request", "Error", Messages.getErrorIcon());
-                        break;
-                    case 500:
-                        JGloHelper.showMessage("Server error", "Error", Messages.getErrorIcon());
-                    default:
-                        JGloHelper.showMessage("Unknow error", "Error", Messages.getErrorIcon());
+                if (successfullyResponse(response)){
+                    loadCards(currentBoard.getId(), currentColumn, index);
                 }
             }
 
@@ -110,7 +101,6 @@ public class MainJGloWindow {
             }
         });
         newDialog.setVisible(true);
-
     }
 
     private void populateTabs(String boardId, List<Column> columns) {
@@ -214,6 +204,7 @@ public class MainJGloWindow {
     }
 
     public JPanel getContent() {
+        mainPanel.setMainJGloWindow(this);
         return mainPanel;
     }
 
@@ -230,5 +221,9 @@ public class MainJGloWindow {
                 }
             }
         });
+    }
+
+    private void createUIComponents() {
+        // TODO: place custom component creation code here
     }
 }
