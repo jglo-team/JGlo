@@ -19,14 +19,23 @@
     </extensions>
 
 
-
-
     <actions>
         <!-- Add your actions here -->
-        <group id="JGlo.Boards" text="Glo" description="Glo" popup="true" icon="/gk-statusbar-icon.svg">
-            <add-to-group group-id="ToolsMenu" anchor="after" relative-to-action="JGlo.BoardsAction"/>
-            <action id="JGlo.BoardsAction" class="actions.LoginAction" text="Login" description="Opens the login page" />
+        <group id="JGlo.Auth" text="Glo" description="Glo" popup="true" icon="/gk-statusbar-icon.svg">
+            <add-to-group group-id="ToolsMenu" anchor="first"/>
+
+            <!--<add-to-group group-id="ToolsMenu" anchor="after" relative-to-action="JGlo.BoardsAction.CreateBoard"/>-->
+
+            <action id="JGlo.BoardsAction.Login" class="actions.LoginAction" text="Login" description="Open the login page" />
+
+            <action id="JGlo.BoardsAction.Logout" class="actions.LogoutAction" text="Logout" description="Logout" />
+
+            <separator/>
+            <action id="JGlo.BoardsAction.CreateBoard" class="actions.CreateBoardAction" text="Create Board" description="Create Board" />
         </group>
+
+
+
 
     </actions>
 </idea-plugin>
