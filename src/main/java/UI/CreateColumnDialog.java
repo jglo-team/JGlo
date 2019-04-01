@@ -2,13 +2,13 @@ package UI;
 
 import API.GloAPIHandler;
 import callbacks.JGloCallback;
-import models.Glo.Card;
 import models.Glo.Column;
-import models.Glo.Description;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.KeyEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 public class CreateColumnDialog extends JDialog {
     private JPanel contentPane;

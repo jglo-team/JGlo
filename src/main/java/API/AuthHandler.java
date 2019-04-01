@@ -3,7 +3,6 @@ package API;
 import callbacks.AuthCallback;
 import com.intellij.credentialStore.CredentialAttributes;
 import com.intellij.ide.passwordSafe.PasswordSafe;
-import com.intellij.ide.util.PropertiesComponent;
 import io.socket.client.IO;
 import io.socket.client.Socket;
 import models.CustomError;

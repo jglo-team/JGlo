@@ -1,17 +1,10 @@
 package actions;
 
 import UI.AddBoardDialog;
-import UI.JGloJPanel;
-import UI.MainJGloWindow;
 import callbacks.JGloCallback;
 import com.intellij.icons.AllIcons;
-import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
-import com.intellij.openapi.actionSystem.CommonDataKeys;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.wm.ToolWindow;
-import com.intellij.openapi.wm.ToolWindowManager;
-import com.intellij.ui.content.Content;
 import com.mashape.unirest.http.HttpResponse;
 import interfaces.ApiRequestHandler;
 import models.JGloHelper;

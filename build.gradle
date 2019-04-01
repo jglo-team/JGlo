@@ -4,7 +4,7 @@ plugins {
 }
 
 group 'com.jglo-team'
-version '1.02-Production'
+version 'v1.02-Production'
 
 sourceCompatibility = 1.8
 

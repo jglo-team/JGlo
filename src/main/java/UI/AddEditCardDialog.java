@@ -1,9 +1,9 @@
 package UI;
 
 import API.GloAPIHandler;
+import callbacks.JGloCallback;
 import models.Glo.Board;
 import models.Glo.Card;
-import callbacks.JGloCallback;
 import models.Glo.Description;
 
 import javax.swing.*;

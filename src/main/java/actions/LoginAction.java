@@ -3,8 +3,6 @@ package actions;
 import API.AuthHandler;
 import API.GloAPIHandler;
 import callbacks.AuthCallback;
-import com.intellij.ide.util.PropertiesComponent;
-import com.intellij.openapi.actionSystem.ActionManager;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.project.Project;

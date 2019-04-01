@@ -1,8 +1,9 @@
 package models.gson;
 
 import com.google.gson.*;
-import models.Glo.*;
-import models.JGloHelper;
+import models.Glo.Board;
+import models.Glo.Column;
+import models.Glo.User;
 
 import java.lang.reflect.Type;
 import java.util.LinkedList;

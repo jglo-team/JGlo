@@ -12,7 +12,6 @@ import com.intellij.openapi.wm.ToolWindowManager;
 import com.intellij.ui.CollectionListModel;
 import com.intellij.ui.components.JBList;
 import com.intellij.ui.content.Content;
-import models.Glo.Description;
 import org.json.JSONArray;
 import org.json.JSONObject;
 

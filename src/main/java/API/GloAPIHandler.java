@@ -3,20 +3,13 @@ package API;
 
 import callbacks.AuthCallback;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.intellij.credentialStore.CredentialAttributes;
-import com.intellij.credentialStore.Credentials;
-import com.intellij.ide.passwordSafe.PasswordSafe;
 import com.intellij.ide.util.PropertiesComponent;
 import com.intellij.openapi.ui.Messages;
 import com.mashape.unirest.http.HttpMethod;
-import com.mashape.unirest.http.HttpResponse;
-import com.mashape.unirest.http.JsonNode;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.async.Callback;
-import com.mashape.unirest.http.exceptions.UnirestException;
 import com.mashape.unirest.request.HttpRequest;
 import com.mashape.unirest.request.HttpRequestWithBody;
-import models.CustomError;
 import models.Glo.Board;
 import models.Glo.Card;
 import models.Glo.Column;
@@ -24,7 +17,6 @@ import models.JGloHelper;
 import models.SecureTokenGenerator;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.Map;
 
 // API Documentation

@@ -1,13 +1,13 @@
 package actions;
 
 import API.GloAPIHandler;
+import callbacks.JGloCallback;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.ui.Messages;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.JsonNode;
 import models.Glo.Board;
-import callbacks.JGloCallback;
 import models.JGloHelper;
 
 
