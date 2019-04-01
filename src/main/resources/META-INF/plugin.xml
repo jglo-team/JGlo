@@ -33,9 +33,8 @@
             <separator/>
             <action id="JGlo.BoardsAction.CreateBoard" class="actions.CreateBoardAction" text="Create Board" description="Create Board" />
         </group>
-
-
-
-
     </actions>
+
+    <idea-version since-build="183" until-build="191.*"/>
+
 </idea-plugin>
