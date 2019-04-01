@@ -1,16 +1,23 @@
 package models;
 
+import UI.JGloJPanel;
+import UI.MainJGloWindow;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.intellij.openapi.application.ApplicationManager;
+import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.Messages;
+import com.intellij.openapi.wm.ToolWindow;
+import com.intellij.openapi.wm.ToolWindowManager;
 import com.intellij.ui.CollectionListModel;
 import com.intellij.ui.components.JBList;
+import com.intellij.ui.content.Content;
 import models.Glo.Description;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import javax.swing.*;
+import java.awt.*;
 import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -53,6 +60,17 @@ public class JGloHelper {
     }
 
 
+    public static MainJGloWindow getMainWindow(Project project){
+        if (project != null){
+            ToolWindow toolWindow = ToolWindowManager.getInstance(project).getToolWindow("JGlo");
+            Content content = toolWindow.getContentManager().getContent(0);
+            Component component = content.getComponent();
+            if (component != null){
+                return ((JGloJPanel)component).getMainJGloWindow();
+            }
+        }
+        return null;
+    }
 
     public static <T> void initializeList(List<T> items, JBList listComponent) {
         ListModel model = new CollectionListModel();
