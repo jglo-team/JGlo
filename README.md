@@ -30,6 +30,6 @@ Extra features:
 
 
 # About us
-We are two students that though 5 + projects were not enough, so we started this plugin.
+We are two students that thought 5+ projects were not enough, so we started this plugin.
 
 We intend to continue it's development for a long time, until it's a fully fledged plugin worthy of it's name.
