@@ -5,6 +5,7 @@ import API.GloAPIHandler;
 import callbacks.AuthCallback;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
+import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.Messages;
 import models.CustomError;
@@ -22,7 +23,9 @@ public class LoginAction extends AnAction {
                 JGloHelper.showMessage("You can now enjoy JGlo!", "Logged in", Messages.getInformationIcon());
                 Project project = e.getProject();
                 if (project != null){
-                    JGloHelper.getMainWindow(e.getProject()).initializeComponents();
+                    ApplicationManager.getApplication().invokeLater(() ->
+                        JGloHelper.getMainWindow(e.getProject()).initializeComponents()
+                    );
                 }
             }
 

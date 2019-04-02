@@ -62,11 +62,16 @@ public class JGloHelper {
     public static MainJGloWindow getMainWindow(Project project){
         if (project != null){
             ToolWindow toolWindow = ToolWindowManager.getInstance(project).getToolWindow("JGlo");
+            if (toolWindow == null)
+                return null;
+
             Content content = toolWindow.getContentManager().getContent(0);
             Component component = content.getComponent();
+
             if (component != null){
                 return ((JGloJPanel)component).getMainJGloWindow();
             }
+
         }
         return null;
     }

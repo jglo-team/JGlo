@@ -4,15 +4,19 @@
     <vendor url="https://github.com/jglo-team/JGlo">JGlo</vendor>
 
     <description><![CDATA[
-        GitKraken Glo Boards integration tool for IntelJ IDE.
+        GitKraken Glo Boards integration tool, compatible with multiple JetBrains products.
     ]]></description>
 
-    <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
-         on how to target different products -->
-    <!-- uncomment to enable plugin in all products-->
+
+    <idea-version since-build="183" until-build="191.*"/>
+
+    <change-notes>
+        v1.02 - Fixed login issue, accessing components from secondary thread.
+    </change-notes>
+
+
+    <!-- Enable plugin in all products-->
     <depends>com.intellij.modules.lang</depends>
-
-
 
     <extensions defaultExtensionNs="com.intellij">
         <!-- Add your extensions here -->
@@ -35,7 +39,4 @@
             <action id="JGlo.BoardsAction.CreateBoard" class="actions.CreateBoardAction" />
         </group>
     </actions>
-
-    <idea-version since-build="183" until-build="191.*"/>
-
 </idea-plugin>

@@ -4,6 +4,7 @@ import UI.AddBoardDialog;
 import callbacks.JGloCallback;
 import com.intellij.icons.AllIcons;
 import com.intellij.openapi.actionSystem.AnActionEvent;
+import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.project.Project;
 import com.mashape.unirest.http.HttpResponse;
 import interfaces.ApiRequestHandler;
@@ -19,7 +20,9 @@ public class CreateBoardAction extends LoggedInAction implements ApiRequestHandl
                 if (successfullyResponse(response)){
                     Project project = e.getProject();
                     if (project != null){
-                        JGloHelper.getMainWindow(e.getProject()).getBoards();
+                        ApplicationManager.getApplication().invokeLater(() ->
+                            JGloHelper.getMainWindow(e.getProject()).getBoards()
+                        );
                     }
 
                 }
