@@ -11,7 +11,12 @@
     <idea-version since-build="183" until-build="191.*"/>
 
     <change-notes>
-        v1.02 - Fixed login issue, accessing components from secondary thread.
+        v1.03:
+            - UI changes to better correspond to JetBrains label + input schema.
+            - Board elimination functionality
+
+        v1.02:
+            - Fixed login issue, accessing components from secondary thread.
     </change-notes>
 
 
