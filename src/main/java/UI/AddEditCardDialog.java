@@ -2,11 +2,14 @@ package UI;
 
 import API.GloAPIHandler;
 import callbacks.JGloCallback;
+import com.intellij.openapi.ui.Messages;
 import models.Glo.Board;
 import models.Glo.Card;
 import models.Glo.Description;
+import models.JGloHelper;
 
 import javax.swing.*;
+import javax.swing.border.Border;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
@@ -22,19 +25,19 @@ public class AddEditCardDialog extends JDialog {
     public AddEditCardDialog(Board targetBoard, int columnIndex, Card card, JGloCallback callback) {
         setContentPane(contentPane);
         setModal(true);
-        setPreferredSize(new Dimension(400,400));
-        setMinimumSize(new Dimension(300, 250));
+        setPreferredSize(new Dimension(550,400));
+        setMinimumSize(new Dimension(400, 300));
 
         setTitle("Add new card");
+        cardDescriptionTextArea.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 
-        // TODO: Handle card description
         if (card != null) {
             buttonCreateEdit.setText("Edit");
             newCardNameTextField.setText(card.getName());
             cardDescriptionTextArea.setText(card.getDescription().getText());
             buttonCreateEdit.addActionListener(e -> {
-                card.setName(newCardNameTextField.getText());
-                card.getDescription().setText(cardDescriptionTextArea.getText());
+                card.setName(newCardNameTextField.getText().trim());
+                card.getDescription().setText(cardDescriptionTextArea.getText().trim());
 
                 onEdit(targetBoard.getId(), card, callback);
             });
@@ -68,8 +71,15 @@ public class AddEditCardDialog extends JDialog {
     }
 
     private void onCreate(String boardId, String columnId, JGloCallback callback) {
+
+        String cardName = newCardNameTextField.getText().trim();
+        String cardDescription = cardDescriptionTextArea.getText().trim();
+        if (cardName.isEmpty()) {
+            JGloHelper.showMessage("A name should be specified", "Error", Messages.getErrorIcon());
+            return;
+        }
         GloAPIHandler handler = new GloAPIHandler();
-        handler.createCard(boardId, columnId,new Card("", new Description(cardDescriptionTextArea.getText()), newCardNameTextField.getText()), callback);
+        handler.createCard(boardId, columnId,new Card("", new Description(cardDescription), cardName), callback);
         dispose();
     }
 

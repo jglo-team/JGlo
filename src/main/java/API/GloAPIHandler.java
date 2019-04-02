@@ -163,6 +163,11 @@ public class GloAPIHandler {
         request(HttpMethod.DELETE, SERVER + targetEndpoint, callbackHandler);
     }
 
+    public void deleteBoard(String boardId, Callback callbackHandler) {
+        String targetEndpoint = "/boards/" + boardId;
+        request(HttpMethod.DELETE, SERVER + targetEndpoint, callbackHandler);
+    }
+
     private void request(HttpMethod method, String endpoint, Callback callbackHandler) {
         HttpRequest request = buildRequest(method, endpoint, null);
         request.asJsonAsync(callbackHandler);

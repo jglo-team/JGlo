@@ -2,7 +2,9 @@ package UI;
 
 import API.GloAPIHandler;
 import callbacks.JGloCallback;
+import com.intellij.openapi.ui.Messages;
 import models.Glo.Column;
+import models.JGloHelper;
 
 import javax.swing.*;
 import java.awt.*;
@@ -25,6 +27,12 @@ public class CreateColumnDialog extends JDialog {
 
         // TODO: Add edit operation
 
+        if (column == null) {
+            this.setTitle("Create column");
+        } else {
+            this.setTitle("Edit column");
+        }
+
         buttonCreate.addActionListener(e -> onOK(boardId, callback));
         buttonCancel.addActionListener(e -> onCancel(callback));
 
@@ -38,8 +46,6 @@ public class CreateColumnDialog extends JDialog {
 
         // call onCancel() on ESCAPE
         contentPane.registerKeyboardAction(e -> onCancel(callback), KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
-        setTitle("Add new column");
-
     }
 
     private void setToSize() {
@@ -54,8 +60,14 @@ public class CreateColumnDialog extends JDialog {
     }
 
     private void onOK(String boardId, JGloCallback callback) {
+        String columnName = newColumnNameTextField.getText().trim();
+        if (columnName.isEmpty()) {
+            JGloHelper.showMessage("A name should be specified", "Error", Messages.getErrorIcon());
+            return;
+        }
+
         GloAPIHandler handler = new GloAPIHandler();
-        handler.createColumn(boardId, new Column(newColumnNameTextField.getText()), callback);
+        handler.createColumn(boardId, new Column(columnName), callback);
         dispose();
     }
 

@@ -2,6 +2,7 @@ package UI;
 
 import API.GloAPIHandler;
 import actions.CreateBoardAction;
+import actions.DeleteBoardAction;
 import callbacks.JGloCallback;
 import com.intellij.icons.AllIcons;
 import com.intellij.ide.IdeBundle;
@@ -33,6 +34,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import javax.swing.*;
+import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -73,6 +75,38 @@ public class MainJGloWindow implements ApiRequestHandler {
             Board selectedBoard = boards.get(boardList.getSelectedIndex());
             getColumns(selectedBoard.getId());
         });
+
+        boardList.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (SwingUtilities.isRightMouseButton(e)) {
+
+                    PopupHandler popupHandler = new PopupHandler() {
+                        @Override
+                        public void invokePopup(Component comp, int x, int y) {
+
+                            DefaultActionGroup actionPopupGroup = new DefaultActionGroup("JGloPopUpGroup", true);
+                            actionPopupGroup.add(new CreateBoardAction());
+                            ActionPopupMenu popupMenu;
+                            if (boardList.getSelectedIndex() != -1) {
+                                actionPopupGroup.add(new DeleteBoardAction(((Board) boardList.getSelectedValue()).getId()));
+                            }
+
+                            popupMenu = ActionManager.getInstance().createActionPopupMenu("POPUP", actionPopupGroup);
+
+                            popupMenu.setTargetComponent(boardList);
+                            JPopupMenu menu = popupMenu.getComponent();
+
+                            menu.show(comp, x, y);
+                        }
+                    };
+                    boardList.addMouseListener(popupHandler);
+
+                }
+
+                super.mouseClicked(e);
+            }
+        });
     }
 
     private void getColumns(String boardId) {
@@ -101,18 +135,8 @@ public class MainJGloWindow implements ApiRequestHandler {
         CreateColumnDialog newDialog = new CreateColumnDialog(currentBoard.getId(), null, new JGloCallback() {
             @Override
             public void completed(HttpResponse response) {
-                switch (response.getStatus()) {
-                    case 200:
-                    case 201:
-                        getColumns(currentBoard.getId());
-                        break;
-                    case 400:
-                        JGloHelper.showMessage("Bad request", "Error", Messages.getErrorIcon());
-                        break;
-                    case 500:
-                        JGloHelper.showMessage("Server error", "Error", Messages.getErrorIcon());
-                    default:
-                        JGloHelper.showMessage("Unknow error", "Error", Messages.getErrorIcon());
+                if (successfullyResponse(response)) {
+                    getColumns(currentBoard.getId());
                 }
             }
 
@@ -129,7 +153,7 @@ public class MainJGloWindow implements ApiRequestHandler {
         AddEditCardDialog newDialog = new AddEditCardDialog(currentBoard, index - 1, card, new JGloCallback() {
             @Override
             public void completed(HttpResponse response) {
-                if (successfullyResponse(response)){
+                if (successfullyResponse(response)) {
                     loadCards(currentBoard.getId(), currentColumn, index);
                 }
             }
@@ -231,8 +255,6 @@ public class MainJGloWindow implements ApiRequestHandler {
         AnActionButton moveAction = new ToolbarDecorator.ElementActionButton(IdeBundle.message("button.copy"), AllIcons.Actions.MoveTo2) {
             @Override
             public void actionPerformed(AnActionEvent e) {
-                // TODO: Continue
-
                 ListPopupStep step = new BaseListPopupStep("Move card to:", currentBoard.getColumns()) {
                     @Override
                     public PopupStep onChosen(Object selectedValue, boolean finalChoice) {
@@ -275,39 +297,6 @@ public class MainJGloWindow implements ApiRequestHandler {
 
     public JPanel getContent() {
         mainPanel.setMainJGloWindow(this);
-
-        boardList.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                if (SwingUtilities.isRightMouseButton(e)) {
-
-                    PopupHandler popupHandler = new PopupHandler() {
-                        @Override
-                        public void invokePopup(Component comp, int x, int y) {
-
-                            DefaultActionGroup actionPopupGroup = new DefaultActionGroup("JGloPopUpGroup", true);
-                            actionPopupGroup.add(new CreateBoardAction());
-                            ActionPopupMenu popupMenu;
-//                            if (boardList.getSelectedIndex() != -1) {
-//                                actionPopupGroup.add(new DeleteBoardAction());
-//                            }
-
-                            popupMenu = ActionManager.getInstance().createActionPopupMenu("POPUP", actionPopupGroup);
-
-                            popupMenu.setTargetComponent(boardList);
-                            JPopupMenu menu = popupMenu.getComponent();
-
-                            menu.show(comp, x, y);
-                        }
-                    };
-                    boardList.addMouseListener(popupHandler);
-
-                }
-
-                super.mouseClicked(e);
-            }
-        });
-
         return mainPanel;
     }
 
