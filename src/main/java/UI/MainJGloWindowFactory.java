@@ -12,7 +12,7 @@ public class MainJGloWindowFactory implements ToolWindowFactory {
     //user clicks on the tool window button
     @Override
     public void createToolWindowContent(@NotNull Project project, @NotNull ToolWindow toolWindow) {
-        MainJGloWindow myToolWindow = new MainJGloWindow(toolWindow);
+        MainJGloWindow myToolWindow = new MainJGloWindow(toolWindow, project);
         ContentFactory contentFactory = ContentFactory.SERVICE.getInstance();
         Content content = contentFactory.createContent(myToolWindow.getContent(), "", false);
         toolWindow.getContentManager().addContent(content);

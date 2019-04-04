@@ -6,11 +6,13 @@ import actions.DeleteBoardAction;
 import callbacks.JGloCallback;
 import com.intellij.icons.AllIcons;
 import com.intellij.ide.IdeBundle;
+import com.intellij.ide.util.PropertiesComponent;
 import com.intellij.openapi.actionSystem.ActionManager;
 import com.intellij.openapi.actionSystem.ActionPopupMenu;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.DefaultActionGroup;
 import com.intellij.openapi.application.ApplicationManager;
+import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.ui.popup.JBPopupFactory;
 import com.intellij.openapi.ui.popup.ListPopupStep;
@@ -41,6 +43,7 @@ import java.awt.event.MouseEvent;
 import java.util.LinkedList;
 import java.util.List;
 
+
 public class MainJGloWindow implements ApiRequestHandler {
     private GloAPIHandler apiHandler;
     private JGloJPanel mainPanel;
@@ -52,15 +55,21 @@ public class MainJGloWindow implements ApiRequestHandler {
     private Board currentBoard;
     private Column currentColumn;
     private Boolean firstSelect = false;
+    private Boolean firstLoad = true;
 
+    private Project project;
     // TODO: Split change - https://www.jetbrains.org/intellij/sdk/docs/user_interface_components/misc_swing_components.html
-    public MainJGloWindow(ToolWindow toolWindow) {
+    public MainJGloWindow(ToolWindow toolWindow, Project project) {
+        this.project = project;
         this.boards = new LinkedList<>();
         this.initializeComponents();
     }
 
     @Override
     protected void finalize() throws Throwable {
+        if (currentBoard != null) {
+            PropertiesComponent.getInstance(project).setValue("JGlo-board", currentBoard.getId());
+        }
         super.finalize();
         Unirest.shutdown();
     }
@@ -73,6 +82,7 @@ public class MainJGloWindow implements ApiRequestHandler {
                 return;
 
             Board selectedBoard = boards.get(boardList.getSelectedIndex());
+
             getColumns(selectedBoard.getId());
         });
 
@@ -109,6 +119,10 @@ public class MainJGloWindow implements ApiRequestHandler {
         });
     }
 
+    public void setActiveBoard(String boardId) {
+
+    }
+
     private void getColumns(String boardId) {
         apiHandler.getBoardColumns(boardId, new JGloCallback() {
             @Override
@@ -118,7 +132,9 @@ public class MainJGloWindow implements ApiRequestHandler {
                 JSONObject responseJSON = body.getObject();
                 try {
                     currentBoard = JGloHelper.parseObjectJson(responseJSON, Board.class);
-
+                    if (currentBoard != null) {
+                        PropertiesComponent.getInstance(project).setValue("JGlo-board", currentBoard.getId());
+                    }
                     ApplicationManager.getApplication().invokeLater(() ->
                             populateTabs(currentBoard.getId(), currentBoard.getColumns())
                     );
@@ -309,7 +325,21 @@ public class MainJGloWindow implements ApiRequestHandler {
                 try {
                     boards = JGloHelper.parseJsonArray(columnsArray, Board.class);
                     JGloHelper.initializeList(boards, boardList);
+                    if (firstLoad) {
+                        String savedBoard = PropertiesComponent.getInstance(project).getValue("JGlo-board");
+                        if (savedBoard != null) {
+                            for (int i = 0; i < boards.size(); i++) {
+                                if (boards.get(i).getId().compareTo(savedBoard) == 0) {
+                                    currentBoard = boards.get(i);
+                                    boardList.setSelectedIndex(i);
+                                }
+                            }
+                        }
+                        firstLoad = false;
+                    }
+
                 } catch (Exception e) {
+                    Messages.showErrorDialog(e.getMessage(), "Error");
                 }
             }
         });

@@ -11,6 +11,11 @@
     <idea-version since-build="182" until-build="191.*"/>
 
     <change-notes>
+        v1.04:
+            - Added compatibility with 182 builds
+            - Icon resize
+            - Save current body to storage and load
+
         v1.03:
             - UI changes to better correspond to JetBrains label + input schema.
             - Board elimination functionality
