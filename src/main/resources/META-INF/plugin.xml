@@ -8,7 +8,7 @@
     ]]></description>
 
 
-    <idea-version since-build="183" until-build="191.*"/>
+    <idea-version since-build="182" until-build="191.*"/>
 
     <change-notes>
         v1.03:
@@ -25,13 +25,13 @@
 
     <extensions defaultExtensionNs="com.intellij">
         <!-- Add your extensions here -->
-        <toolWindow id="JGlo" anchor="right" secondary="false" factoryClass="UI.MainJGloWindowFactory" icon="/gk-statusbar-icon.svg" />
+        <toolWindow id="JGlo" anchor="right" secondary="false" factoryClass="UI.MainJGloWindowFactory" icon="/gk-statusbar-icon-small.svg" />
     </extensions>
 
 
     <actions>
         <!-- Add your actions here -->
-        <group id="JGlo.Auth" text="Glo" description="Glo" popup="true" icon="/gk-statusbar-icon.svg">
+        <group id="JGlo.Auth" text="Glo" description="Glo" popup="true" icon="/gk-statusbar-icon-small.svg">
             <add-to-group group-id="ToolsMenu" anchor="first"/>
 
             <!--<add-to-group group-id="ToolsMenu" anchor="after" relative-to-action="JGlo.BoardsAction.CreateBoard"/>-->

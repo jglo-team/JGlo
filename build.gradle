@@ -4,7 +4,7 @@ plugins {
 }
 
 group 'com.jglo-team'
-version 'v1.03-Production'
+version 'v1.04-Production'
 
 sourceCompatibility = 1.8
 
@@ -13,7 +13,7 @@ repositories {
 }
 
 patchPluginXml {
-    sinceBuild "183"
+    sinceBuild "182"
     untilBuild "191.*"
 }
 
