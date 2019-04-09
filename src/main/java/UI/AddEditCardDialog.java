@@ -37,6 +37,7 @@ public class AddEditCardDialog extends JDialog {
             cardDescriptionTextArea.setText(card.getDescription().getText());
             buttonCreateEdit.addActionListener(e -> {
                 card.setName(newCardNameTextField.getText().trim());
+
                 card.getDescription().setText(cardDescriptionTextArea.getText().trim());
 
                 onEdit(targetBoard.getId(), card, callback);
