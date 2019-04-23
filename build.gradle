@@ -4,7 +4,7 @@ plugins {
 }
 
 group 'com.jglo-team'
-version 'v1.04-Production'
+version 'v1.06-Production'
 
 sourceCompatibility = 1.8
 
@@ -37,7 +37,7 @@ jar {
 }
 
 task customFatJar(type: Jar) {
-    baseName = 'all-in-one-jar'
+    baseName = 'JGlo-v1.06-Production'
     from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
     with jar
 }

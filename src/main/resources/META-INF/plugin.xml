@@ -11,6 +11,13 @@
     <idea-version since-build="182" until-build="191.*"/>
 
     <change-notes>
+
+        v1.06:
+            - Temporary fix for login issue in KDE system
+
+        v1.05:
+            - Replaced silly json conversion with Gson methods
+
         v1.04:
             - Added compatibility with 182 builds
             - Icon resize

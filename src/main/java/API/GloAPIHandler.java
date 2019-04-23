@@ -16,6 +16,7 @@ import models.Glo.Column;
 import models.JGloHelper;
 import models.SecureTokenGenerator;
 
+import java.awt.*;
 import java.io.IOException;
 import java.util.Map;
 
@@ -29,27 +30,6 @@ public class GloAPIHandler {
 
     public GloAPIHandler() {
         userToken = AuthHandler.loadAccessToken();
-
-        /*
-        if (userToken == null) {
-            triggerLogin(new AuthCallback() {
-                @Override
-                public void success() {
-                    userToken = AuthHandler.loadAccessToken();
-                    if (userToken == null) {
-                        // Error ocorred
-                    }
-                }
-
-                @Override
-                public void error(CustomError customError) {
-                    if (customError == CustomError.SOCKET_ERROR){
-                        JGloHelper.showMessage("An error occurred connecting to the remote server", "Error", Messages.getErrorIcon());
-                    }
-                }
-            });
-        }
-        */
     }
 
     public void triggerLogin(AuthCallback callback) {
@@ -65,7 +45,13 @@ public class GloAPIHandler {
                 "&state=" + token;
 
         try {
-            java.awt.Desktop.getDesktop().browse(java.net.URI.create(url));
+            // TODO: Change this to be cross platform
+            if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
+                java.awt.Desktop.getDesktop().browse(java.net.URI.create(url));
+            } else {
+                JGloHelper.showMessage("Automatic browser opening is not supported in this platform. Please follow the link: \n" + url, "Warning", Messages.getWarningIcon());
+            }
+
         } catch (IOException ex) {
             JGloHelper.showMessage("An error occurred opening the OAuth URL", "Error", Messages.getErrorIcon());
         }
