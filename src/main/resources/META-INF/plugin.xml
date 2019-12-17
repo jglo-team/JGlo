@@ -11,7 +11,8 @@
     <idea-version since-build="182" until-build="192.*"/>
 
     <change-notes>
-
+        v1.08:
+            - Add 2019.3 versions to support list
         v1.07:
             - Add 2019.2 versions to support list
         v1.06:
