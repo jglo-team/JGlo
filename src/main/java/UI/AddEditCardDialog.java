@@ -3,14 +3,19 @@ package UI;
 import API.GloAPIHandler;
 import callbacks.JGloCallback;
 import com.intellij.openapi.ui.Messages;
+import com.intellij.vcs.log.ui.frame.WrappedFlowLayout;
 import models.Glo.Board;
 import models.Glo.Card;
 import models.Glo.Description;
 import models.JGloHelper;
+import org.apache.commons.lang.WordUtils;
 
 import javax.swing.*;
 import javax.swing.border.Border;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import java.awt.*;
+import java.awt.event.ComponentListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -47,7 +52,6 @@ public class AddEditCardDialog extends JDialog {
         }
         getRootPane().setDefaultButton(buttonCreateEdit);
 
-        setToSize();
 
         buttonCancel.addActionListener(e -> onCancel(callback));
 
@@ -61,6 +65,9 @@ public class AddEditCardDialog extends JDialog {
 
         // call onCancel() on ESCAPE
         contentPane.registerKeyboardAction(e -> onCancel(callback), KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
+
+        setToSize();
+        cardDescriptionTextArea.setLineWrap(true);
     }
 
     private void setToSize() {
@@ -93,7 +100,6 @@ public class AddEditCardDialog extends JDialog {
 
     private void onCancel(JGloCallback callback) {
         dispose();
-
         callback.cancelled();
     }
 }
