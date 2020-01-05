@@ -19,19 +19,15 @@
             - Add 2019.2 versions to support list
         v1.06:
             - Temporary fix for login issue in KDE system
-
         v1.05:
             - Replaced silly json conversion with Gson methods
-
         v1.04:
             - Added compatibility with 182 builds
             - Icon resize
             - Save current body to storage and load
-
         v1.03:
             - UI changes to better correspond to JetBrains label + input schema.
             - Board elimination functionality
-
         v1.02:
             - Fixed login issue, accessing components from secondary thread.
     </change-notes>
