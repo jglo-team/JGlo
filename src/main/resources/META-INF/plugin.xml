@@ -8,9 +8,11 @@
     ]]></description>
 
 
-    <idea-version since-build="182" until-build="192.*"/>
+    <idea-version since-build="182" until-build="202.*"/>
 
     <change-notes>
+        v1.10:
+            - Add 2020.1 versions to support list
         v1.09:
             - Fix window resizing for creating and updating cards
         v1.08:

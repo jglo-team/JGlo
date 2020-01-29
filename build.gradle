@@ -4,7 +4,7 @@ plugins {
 }
 
 group 'com.jglo-team'
-version 'v1.09-Production'
+version 'v1.10-Production'
 
 sourceCompatibility = 1.8
 
@@ -14,7 +14,7 @@ repositories {
 
 patchPluginXml {
     sinceBuild "182"
-    untilBuild "193.*"
+    untilBuild "202"
 }
 
 dependencies {
@@ -37,7 +37,7 @@ jar {
 }
 
 task customFatJar(type: Jar) {
-    baseName = 'JGlo-v1.09-Prod'
+    baseName = 'JGlo-v1.10-Prod'
     from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
     with jar
 }
