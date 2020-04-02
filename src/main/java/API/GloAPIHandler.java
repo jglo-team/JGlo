@@ -103,7 +103,7 @@ public class GloAPIHandler {
         ObjectMapper objectMapper = new ObjectMapper();
         Map<String, Object> map = objectMapper.convertValue(newCard, Map.class);
         map.put("column_id", columnId);
-
+        map.remove("id");
         request(HttpMethod.POST, SERVER + targetEndpoint, map, callbackHandler);
     }
 
