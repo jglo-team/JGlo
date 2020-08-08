@@ -1,10 +1,10 @@
 plugins {
     id 'java'
-    id 'org.jetbrains.intellij' version '0.4.7'
+    id 'org.jetbrains.intellij' version '0.4.21'
 }
 
 group 'com.jglo-team'
-version 'v1.10.2-Production'
+version 'v1.10.3-Production'
 
 sourceCompatibility = 1.8
 
@@ -14,7 +14,7 @@ repositories {
 
 patchPluginXml {
     sinceBuild "182"
-    untilBuild "202"
+    untilBuild "202.*"
 }
 
 dependencies {
@@ -25,7 +25,7 @@ dependencies {
 }
 
 intellij {
-    version '2018.3.4'
+    version '2020.1.2'
     pluginName 'JGlo'
     updateSinceUntilBuild true
 }
